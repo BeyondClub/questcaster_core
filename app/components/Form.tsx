@@ -10,8 +10,36 @@ const Form = () => {
   const [token, setToken] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  async function addDataToVercelDB(e: { preventDefault: () => void }) {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(
+        `/api/dba?username=${encodeURIComponent(
+          username
+        )}&token_address=${encodeURIComponent(
+          tokenAddress
+        )}&contract_address=${encodeURIComponent(
+          'contract...x333'
+        )}&verify_follow=${follow}&verify_recast=${recast}&verify_tokens=${token}`,
+        {
+          method: 'POST',
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to add quest');
+      }
+
+      const data = await response.json();
+      console.log('Quest added successfully:', data);
+    } catch (error) {
+      console.error('Error adding quest:', error);
+    }
+  }
+
   return (
-    <form>
+    <form onSubmit={addDataToVercelDB}>
       <label className='form-control w-full max-w-xs'>
         <div className='label'>
           <span className='label-text text-black font-semibold'>Username</span>
@@ -40,7 +68,7 @@ const Form = () => {
             type='checkbox'
             checked={follow}
             className='checkbox border-orange-400 checked:border-indigo-800 [--chkbg:theme(colors.indigo.600)] [--chkfg:orange]'
-            onClick={() => setFollow((follow) => !follow)}
+            onClick={() => setFollow((follow: any) => !follow)}
           />
         </label>
         <label className='cursor-pointer label'>
@@ -49,7 +77,7 @@ const Form = () => {
             type='checkbox'
             checked={recast}
             className='checkbox border-orange-400 checked:border-indigo-800 [--chkbg:theme(colors.indigo.600)] [--chkfg:orange]'
-            onClick={() => setRecast((recast) => !recast)}
+            onClick={() => setRecast((recast: any) => !recast)}
           />
         </label>
         <label className='cursor-pointer label'>
@@ -58,7 +86,7 @@ const Form = () => {
             type='checkbox'
             checked={token}
             className='checkbox border-orange-400 checked:border-indigo-800 [--chkbg:theme(colors.indigo.600)] [--chkfg:orange]'
-            onClick={() => setToken((token) => !token)}
+            onClick={() => setToken((token: any) => !token)}
           />{' '}
         </label>
         {token && (
@@ -107,7 +135,10 @@ const Form = () => {
           </div>
         )}
       </div>
-      <button className='btn btn-active w-full mt-5 bg-black text-white'>
+      <button
+        className='btn btn-active w-full mt-5 bg-black text-white'
+        type='submit'
+      >
         {loading && <span className='loading loading-spinner'></span>}
         {!loading && 'Generate Link'}
       </button>
