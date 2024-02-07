@@ -18,9 +18,13 @@ export async function GET(request: NextRequest) {
           <div tw='flex flex-col'>
             <h2 tw='text-4xl'>Quests</h2>
             <ol tw='flex flex-col'>
-              {verify_follow && <li tw='text-2xl'>- Follow @{username}</li>}
-              {verify_recast && <li tw='text-2xl'>- Recast this post</li>}
-              {verify_tokens && (
+              {verify_follow == 'true' && (
+                <li tw='text-2xl'>- Follow @{username}</li>
+              )}
+              {verify_recast == 'true' && (
+                <li tw='text-2xl'>- Recast this post</li>
+              )}
+              {verify_tokens == 'true' && (
                 <li tw='text-2xl'>- Hold {token_name} tokens</li>
               )}
             </ol>
