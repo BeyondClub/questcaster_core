@@ -22,10 +22,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function Home() {
-  return (
-    <main className='flex flex-col text-center text-white lg:p-16'>
-      {/* <Yoink /> */}
-      Hello
-    </main>
-  );
+  return <div>Questcaster | beyondClub</div>;
 }
