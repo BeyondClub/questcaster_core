@@ -21,7 +21,7 @@ const Form = () => {
           tokenAddress
         )}&contract_address=${encodeURIComponent(
           'contract...x333'
-        )}&verify_follow=${follow}&verify_recast=${recast}&verify_tokens=${token}`,
+        )}&verify_follow=${follow}&verify_recast=${recast}&verify_tokens=${token}&token_name=${tokenName}`,
         {
           method: 'POST',
         }
@@ -55,6 +55,23 @@ const Form = () => {
         <div className='label'>
           <span className='label-text-alt'>
             Farcaster @ that should be followed
+          </span>
+        </div>
+      </label>
+      <label className='form-control w-full max-w-xs'>
+        <div className='label'>
+          <span className='label-text text-black font-semibold'>
+            NFT Image Upload
+          </span>
+        </div>
+        <input
+          type='file'
+          className='file-input file-input-bordered text-black file-input-md w-full max-w-xs'
+        />
+
+        <div className='label'>
+          <span className='label-text-alt'>
+            Choose NFT Image to be airdropped
           </span>
         </div>
       </label>

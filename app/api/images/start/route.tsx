@@ -4,6 +4,10 @@ import { NextRequest } from 'next/server';
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const username: string = searchParams.get('username') || '';
+  const verify_follow = searchParams.get('verify_follow');
+  const verify_recast = searchParams.get('verify_recast');
+  const verify_tokens = searchParams.get('verify_tokens');
+  const token_name = searchParams.get('token_name');
 
   return new ImageResponse(
     (
@@ -14,8 +18,11 @@ export async function GET(request: NextRequest) {
           <div tw='flex flex-col'>
             <h2 tw='text-4xl'>Quests</h2>
             <ol tw='flex flex-col'>
-              <li tw='text-2xl'>1. Follow @{username}</li>
-              <li tw='text-2xl'>2. Recast this post</li>
+              {verify_follow && <li tw='text-2xl'>- Follow @{username}</li>}
+              {verify_recast && <li tw='text-2xl'>- Recast this post</li>}
+              {verify_tokens && (
+                <li tw='text-2xl'>- Hold {token_name} tokens</li>
+              )}
             </ol>
           </div>
           <img

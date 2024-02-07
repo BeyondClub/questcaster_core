@@ -1,28 +1,21 @@
+import { sql } from '@vercel/postgres';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(
+export async function GET(
   request: Request,
   { params }: { params: { c: string } }
 ) {
   let info = null;
-  const postUrl = `https://questcastertest.vercel.app/api/verify`;
-  const imageUrl = `https://questcastertest.vercel.app/api/images/start?username=${params.c}`;
 
   try {
-    const response = await fetch(
-      `/api/dbf?username=${params.c}`, // Ensure proper URL encoding
-      {
-        method: 'GET',
-      }
-    );
+    const quest = await sql`
+      SELECT * FROM Quests WHERE Username = ${params.c};
+    `;
 
-    if (!response.ok) {
-      throw new Error('Failed to add quest');
-    }
+    info = quest.rows[0];
 
-    const data = await response.json();
-    info = data;
-    console.log('Quest added successfully:', data);
+    const postUrl = `https://questcastertest.vercel.app/api/verify`;
+    const imageUrl = `https://questcastertest.vercel.app/api/images/start?username=${params.c}&contract_address=${info.contract_address}&verify_follow=${info.verify_follow}&verify_recast=${info.verify_recast}&verify_tokens=${info.verify_tokens}`;
 
     return new NextResponse(
       `<!DOCTYPE html>
