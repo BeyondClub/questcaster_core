@@ -4,7 +4,7 @@ import { NextRequest } from 'next/server';
 export async function GET(request: NextRequest) {
   return new ImageResponse(
     (
-      <div className='p-10'>
+      <div className='p-10 flex'>
         <h1 className='font-black text-xl'>Its working</h1>
       </div>
     ),
