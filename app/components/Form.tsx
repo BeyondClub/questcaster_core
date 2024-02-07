@@ -13,6 +13,8 @@ const Form = () => {
   async function addDataToVercelDB(e: { preventDefault: () => void }) {
     e.preventDefault();
 
+    setLoading(true);
+
     try {
       const response = await fetch(
         `/api/dba?username=${encodeURIComponent(
@@ -33,8 +35,10 @@ const Form = () => {
 
       const data = await response.json();
       console.log('Quest added successfully:', data);
+      setLoading(false);
     } catch (error) {
       console.error('Error adding quest:', error);
+      setLoading(false);
     }
   }
 

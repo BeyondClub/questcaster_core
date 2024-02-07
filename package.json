@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@airstack/node": "^0.0.5",
+    "@coinbase/onchainkit": "0.1.6",
     "@vercel/og": "^0.6.2",
     "@vercel/postgres": "^0.7.2",
     "daisyui": "^4.6.2",
