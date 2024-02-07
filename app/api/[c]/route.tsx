@@ -4,11 +4,28 @@ export async function POST(
   request: Request,
   { params }: { params: { c: string } }
 ) {
+  let info = null;
   const postUrl = `https://questcastertest.vercel.app/api/verify`;
   const imageUrl = `https://questcastertest.vercel.app/api/images/start?username=${params.c}`;
 
-  return new NextResponse(
-    `<!DOCTYPE html>
+  try {
+    const response = await fetch(
+      `/api/dbf?username=${params.c}`, // Ensure proper URL encoding
+      {
+        method: 'GET',
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to add quest');
+    }
+
+    const data = await response.json();
+    info = data;
+    console.log('Quest added successfully:', data);
+
+    return new NextResponse(
+      `<!DOCTYPE html>
       <html>
         <head>
           <title>Yoinked!</title>
@@ -21,13 +38,14 @@ export async function POST(
         </head>
         <body>beyondClub</body>
       </html>`,
-    {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/html',
-      },
-    }
-  );
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/html',
+        },
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
 }
-
-export const GET = POST;
