@@ -58,7 +58,7 @@ const Form = () => {
         />
         <div className='label'>
           <span className='label-text-alt'>
-            Farcaster @ that should be followed
+            Farcaster username that should be followed without @
           </span>
         </div>
       </label>

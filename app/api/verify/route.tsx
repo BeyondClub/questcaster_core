@@ -59,7 +59,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   // verify follow with Airstack
   const { data, error } = await fetchQuery(
     `query isFollowing {
-  Wallet(input: {identity: "fc_fname:beyondclub", blockchain: ethereum}) {
+  Wallet(input: {identity: "fc_fname:${username}", blockchain: ethereum}) {
     socialFollowings(
       input: {filter: {identity: {_eq: "fc_fid:${fid}"}, dappName: {_eq: farcaster}}}
     ) {
@@ -81,7 +81,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     return new NextResponse(`<!DOCTYPE html><html><head>
         <meta property="fc:frame" content="vNext" />
           <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}&contract_address=${contract_address}&verify_follow=${verify_follow}&verify_recast=${verify_recast}&verify_tokens=${verify_tokens}`} />
-        <meta property="fc:frame:button:1" content='Follow beyondclub and try again :)' />
+        <meta property="fc:frame:button:1" content=${`Follow ${username} and try again :)`} />
         <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}&contract_address=${contract_address}&verify_follow=${verify_follow}&verify_recast=${verify_recast}&verify_tokens=${verify_tokens}`} />
       </head></html>`);
   }
