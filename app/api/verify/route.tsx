@@ -90,7 +90,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     return new NextResponse(`<!DOCTYPE html><html><head>
         <meta property="fc:frame" content="vNext" />
           <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}&contract_address=${contract_address}&verify_follow=${verify_follow}&verify_recast=${verify_recast}&verify_tokens=${verify_tokens}`} />
-        <meta property="fc:frame:button:1" content=${`Follow ${username}`} />
+        <meta property="fc:frame:button:1" content=${`Complete follow quest`} />
         <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}&contract_address=${contract_address}&verify_follow=${verify_follow}&verify_recast=${verify_recast}&verify_tokens=${verify_tokens}`} />
       </head></html>`);
   }

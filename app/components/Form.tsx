@@ -9,6 +9,7 @@ const Form = () => {
   const [recast, setRecast] = useState(false);
   const [token, setToken] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   async function addDataToVercelDB(e: { preventDefault: () => void }) {
     e.preventDefault();
@@ -36,6 +37,7 @@ const Form = () => {
       const data = await response.json();
       console.log('Quest added successfully:', data);
       setLoading(false);
+      setSuccess(true);
     } catch (error) {
       console.error('Error adding quest:', error);
       setLoading(false);
@@ -44,22 +46,20 @@ const Form = () => {
 
   return (
     <form onSubmit={addDataToVercelDB}>
-      <label className='form-control w-full max-w-xs'>
+      <label className='form-control w-full max-w-xs text-black'>
         <div className='label'>
           <span className='label-text text-black font-semibold'>Username</span>
         </div>
         <input
           type='text'
           placeholder='Type here'
-          className='input input-bordered w-full max-w-xs'
+          className='input input-bordered max-w-xs text-black'
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
         />
         <div className='label'>
-          <span className='label-text-alt'>
-            Farcaster username that should be followed without @
-          </span>
+          <span className='label-text-alt'>Farcaster username without @</span>
         </div>
       </label>
       <label className='form-control w-full max-w-xs'>
@@ -163,6 +163,24 @@ const Form = () => {
         {loading && <span className='loading loading-spinner'></span>}
         {!loading && 'Generate Link'}
       </button>
+      {success && (
+        <div role='alert' className='alert alert-success mt-5'>
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            className='stroke-current shrink-0 h-6 w-6'
+            fill='none'
+            viewBox='0 0 24 24'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth='2'
+              d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
+            />
+          </svg>
+          <span>Contract created successfully</span>
+        </div>
+      )}
     </form>
   );
 };
