@@ -1,13 +1,12 @@
 'use client';
 import Form from '../components/Form';
+import SectionHeading from '../components/SectionHeading';
 
 const page = () => {
   return (
-    <main className='min-h-screen bg-orange-100 flex justify-center items-center'>
-      <div className='w-96 mx-auto bg-white rounded-xl shadow-xl p-7 px-7'>
-        <h1 className='text-neutral-800 font-bold text-center mb-5 text-2xl'>
-          QuestCaster | beyondClub
-        </h1>
+    <main className='min-h-screen bg-black flex justify-center items-center p-32'>
+      <div className='w-[700px] mx-auto bg-black border rounded-xl shadow-xl p-7 px-7'>
+        <h1 className='font-medium text-3xl'>Create a Frame Quest</h1>
         <Form />
       </div>
     </main>

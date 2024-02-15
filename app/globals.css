@@ -31,3 +31,8 @@ body {
     text-wrap: balance;
   }
 }
+
+.sp-input {
+  outline: none !important;
+  border: none !important;
+}
