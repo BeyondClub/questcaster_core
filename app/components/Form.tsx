@@ -9,8 +9,8 @@ const Form = () => {
   const [tokenAddress, setTokenAddress] = useState('');
   const [collectibleName, setCollectibleName] = useState('');
   const [collectibleSymbol, setCollectibleSymbol] = useState('');
-  const [maxMint, setMaxMint] = useState(null);
-  const [totalAmount, setTotalAmount] = useState(null);
+  const [maxMint, setMaxMint] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
   const [file, setFile] = useState('');
   const [follow, setFollow] = useState(false);
   const [recast, setRecast] = useState(false);

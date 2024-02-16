@@ -1,4 +1,5 @@
 import { ImageResponse } from '@vercel/og';
+import Image from 'next/image';
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -9,35 +10,51 @@ export async function GET(request: NextRequest) {
   const verify_tokens = searchParams.get('verify_tokens');
   const token_name = searchParams.get('token_name');
 
+  const imageData = await fetch(new URL('./bg.png', import.meta.url)).then(
+    (res) => res.arrayBuffer()
+  );
+
   return new ImageResponse(
     (
-      <div tw='p-10 px-20 flex flex-col bg-indigo-600 w-full h-full text-white relative'>
-        <p tw='text-xl absolute bottom-10 left-20'>QuestCaster by beyondClub</p>
-        <h1 tw='font-black text-5xl'>Engage with @{username} and FREE MINT!</h1>
-        <div tw='flex mt-12 justify-between'>
-          <div tw='flex flex-col'>
-            <h2 tw='text-4xl'>Quests</h2>
-            <ol tw='flex flex-col'>
-              {verify_follow == 'true' && (
-                <li tw='text-2xl'>- Follow @{username}</li>
-              )}
-              {verify_recast == 'true' && (
-                <li tw='text-2xl'>- Recast this post</li>
-              )}
-              {verify_tokens == 'true' && (
-                <li tw='text-2xl'>- Hold {token_name} tokens</li>
-              )}
-            </ol>
+      <div tw='flex'>
+        <Image
+          src={`${process.env.VERCEL_URL}/bg.png`}
+          alt='bg'
+          height={630}
+          width={1200}
+        />
+        <div tw='p-10 px-20 flex flex-col bg-indigo-600 w-full h-full text-white relative'>
+          <p tw='text-xl absolute bottom-10 left-20'>
+            QuestCaster by beyondClub
+          </p>
+          <h1 tw='font-black text-5xl'>
+            Engage with @{username} and FREE MINT!
+          </h1>
+          <div tw='flex mt-12 justify-between'>
+            <div tw='flex flex-col'>
+              <h2 tw='text-4xl'>Quests</h2>
+              <ol tw='flex flex-col'>
+                {verify_follow == 'true' && (
+                  <li tw='text-2xl'>- Follow @{username}</li>
+                )}
+                {verify_recast == 'true' && (
+                  <li tw='text-2xl'>- Recast this post</li>
+                )}
+                {verify_tokens == 'true' && (
+                  <li tw='text-2xl'>- Hold {token_name} tokens</li>
+                )}
+              </ol>
+            </div>
+            <img
+              width='256'
+              height='256'
+              src={`https://github.com/vercel.png`}
+              style={{
+                borderRadius: 128,
+                marginRight: 120,
+              }}
+            />
           </div>
-          <img
-            width='256'
-            height='256'
-            src={`https://github.com/vercel.png`}
-            style={{
-              borderRadius: 128,
-              marginRight: 120,
-            }}
-          />
         </div>
       </div>
     ),

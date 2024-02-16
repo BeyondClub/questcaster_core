@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Button, Group, Input, Progress, Text } from '@mantine/core';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { Cross1Icon, ImageIcon, UploadIcon } from '@radix-ui/react-icons';
