@@ -3,7 +3,6 @@ import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const username: string = searchParams.get('username') || '';
 
   return new ImageResponse(
     (
@@ -15,7 +14,7 @@ export async function GET(request: NextRequest) {
             src='https://questcastertest.vercel.app/images/qlogo.png'
           />
         </p>
-        <h2 tw='text-7xl -mt-10'>Mint Successfull ✨</h2>
+        <h2 tw='text-7xl -mt-10 font-bold'>Mint Successfull ✨</h2>
       </div>
     ),
     {

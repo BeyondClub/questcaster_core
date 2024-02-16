@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchQuery, init } from '@airstack/node';
 import { getFrameAccountAddress } from '@coinbase/onchainkit';
+import { sql } from '@vercel/postgres';
 // import { WalletService } from '@unlock-protocol/unlock-js';
 // import { chainConfig, lockAddress, unlockABI } from '@/app/config';
 // import { ethers } from 'ethers';
@@ -8,20 +9,30 @@ import { getFrameAccountAddress } from '@coinbase/onchainkit';
 export async function POST(req: NextRequest): Promise<Response> {
   const { searchParams } = new URL(req.url);
   const username: string = searchParams.get('username') || '';
-  const verify_follow = searchParams.get('verify_follow');
-  const verify_recast = searchParams.get('verify_recast');
-  const verify_tokens = searchParams.get('verify_tokens');
-  const token_name = searchParams.get('token_name');
-  const contract_address = searchParams.get('contract_address');
+
+  const quest = await sql`
+      SELECT * FROM Quests WHERE Username = ${username};
+    `;
+
+  const {
+    verify_follow,
+    verify_recast,
+    verify_tokens,
+    token_name,
+    image_url,
+    token_address,
+  } = quest.rows[0];
+
+  console.log(quest.rows[0]);
 
   init('116adcc049997451b948dad4e53d94f98');
 
   if (username == '' || username == undefined) {
     return new NextResponse(`<!DOCTYPE html><html><head>
         <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}&contract_address=${contract_address}&verify_follow=${verify_follow}&verify_recast=${verify_recast}&verify_tokens=${verify_tokens}`} />
+          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
         <meta property="fc:frame:button:1" content=${`Username Invalid`} />
-        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}&contract_address=${contract_address}&verify_follow=${verify_follow}&verify_recast=${verify_recast}&verify_tokens=${verify_tokens}`} />
+        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
       </head></html>`);
   }
 
@@ -39,12 +50,20 @@ export async function POST(req: NextRequest): Promise<Response> {
     messageBytes = body?.trustedData?.messageBytes;
   } catch (err) {
     console.error(err);
-    accountAddress = 'Issue with Neynar API Key';
   }
 
   const byteArray = new Uint8Array(
     messageBytes?.match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16)) || []
   );
+
+  if (accountAddress == null) {
+    return new NextResponse(`<!DOCTYPE html><html><head>
+          <meta property="fc:frame" content="vNext" />
+          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
+          <meta property="fc:frame:button:1" content='Add Wallet to Farcaster' />
+        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
+        </head></html>`);
+  }
 
   try {
     const response = await fetch(
@@ -66,8 +85,9 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   // verify follow with Airstack
-  const { data, error } = await fetchQuery(
-    `query isFollowing {
+  if (verify_follow === true) {
+    const { data, error } = await fetchQuery(
+      `query isFollowing {
   Wallet(input: {identity: "fc_fname:${username}", blockchain: ethereum}) {
     socialFollowings(
       input: {filter: {identity: {_eq: "fc_fid:${fid}"}, dappName: {_eq: farcaster}}}
@@ -84,60 +104,101 @@ export async function POST(req: NextRequest): Promise<Response> {
     }
   }
 }`
-  );
-
-  if (
-    data.Wallet.socialFollowings.Following == null &&
-    verify_follow == 'true'
-  ) {
-    return new NextResponse(`<!DOCTYPE html><html><head>
-        <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}&contract_address=${contract_address}&verify_follow=${verify_follow}&verify_recast=${verify_recast}&verify_tokens=${verify_tokens}`} />
-        <meta property="fc:frame:button:1" content='Follow ➕' />
-        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}&contract_address=${contract_address}&verify_follow=${verify_follow}&verify_recast=${verify_recast}&verify_tokens=${verify_tokens}`} />
-      </head></html>`);
-  }
-
-  try {
-    const response = await fetch(
-      `https://api.neynar.com/v2/farcaster/cast?identifier=${hash}&type=hash`,
-      {
-        method: 'GET',
-        headers: { accept: 'application/json', api_key: 'NEYNAR_API_DOCS' },
-      }
     );
 
-    const body = await response.json();
-    const recasts = body?.cast?.reactions?.recasts;
-    console.log(recasts);
-    let recasted = false;
-
-    for (const item of recasts) {
-      if (item.fid === fid) {
-        recasted = true;
-        break;
-      }
-    }
-
-    if (!recasted && verify_recast == 'true') {
+    if (data.Wallet.socialFollowings.Following == null) {
       return new NextResponse(`<!DOCTYPE html><html><head>
-          <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}&contract_address=${contract_address}&verify_follow=${verify_follow}&verify_recast=${verify_recast}&verify_tokens=${verify_tokens}`} />
-          <meta property="fc:frame:button:1" content='Recast 🔂' />
-        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}&contract_address=${contract_address}&verify_follow=${verify_follow}&verify_recast=${verify_recast}&verify_tokens=${verify_tokens}`} />
-        </head></html>`);
+        <meta property="fc:frame" content="vNext" />
+          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
+        <meta property="fc:frame:button:1" content=${`Follow ${username}`} />
+        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
+      </head></html>`);
     }
-  } catch (error) {
-    console.log(error);
   }
 
-  if (accountAddress == null) {
-    return new NextResponse(`<!DOCTYPE html><html><head>
+  if (verify_recast === true) {
+    try {
+      const response = await fetch(
+        `https://api.neynar.com/v2/farcaster/cast?identifier=${hash}&type=hash`,
+        {
+          method: 'GET',
+          headers: { accept: 'application/json', api_key: 'NEYNAR_API_DOCS' },
+        }
+      );
+
+      const body = await response.json();
+      const recasts = body?.cast?.reactions?.recasts;
+      console.log(recasts);
+      let recasted = false;
+
+      for (const item of recasts) {
+        if (item.fid === fid) {
+          recasted = true;
+          break;
+        }
+      }
+
+      if (!recasted && verify_recast == 'true') {
+        return new NextResponse(`<!DOCTYPE html><html><head>
           <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}&contract_address=${contract_address}&verify_follow=${verify_follow}&verify_recast=${verify_recast}&verify_tokens=${verify_tokens}`} />
-          <meta property="fc:frame:button:1" content='Add Wallet to Farcaster' />
-        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}&contract_address=${contract_address}&verify_follow=${verify_follow}&verify_recast=${verify_recast}&verify_tokens=${verify_tokens}`} />
+          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
+          <meta property="fc:frame:button:1" content='Recast Post 🔂' />
+        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
         </head></html>`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  if (verify_tokens === true && token_address !== null) {
+    try {
+      const { data, error } = await fetchQuery(
+        `query MyQuery {
+  Base: TokenBalances(
+    input: {filter: {owner: {_eq: ${accountAddress}}, tokenAddress: {_eq: ${token_address}}}, blockchain: base, limit: 50}
+  ) {
+    TokenBalance {
+      formattedAmount
+    }
+  }
+  Ethereum: TokenBalances(
+    input: {filter: {owner: {_eq: ${accountAddress}}, tokenAddress: {_eq: ${token_address}}}, blockchain: ethereum, limit: 50}
+  ) {
+    TokenBalance {
+      formattedAmount
+    }
+  }
+  Polygon: TokenBalances(
+    input: {filter: {owner: {_eq: ${accountAddress}}, tokenAddress: {_eq: ${token_address}}}, blockchain: polygon, limit: 50}
+  ) {
+    TokenBalance {
+      formattedAmount
+    }
+  }
+  }`
+      );
+
+      let exists = false;
+      if (
+        data.Base.TokenBalance !== null ||
+        data.Ethereum.TokenBalance !== null ||
+        data.Polygon.TokenBalance !== null
+      ) {
+        exists = true;
+      }
+
+      if (!exists) {
+        return new NextResponse(`<!DOCTYPE html><html><head>
+        <meta property="fc:frame" content="vNext" />
+          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
+        <meta property="fc:frame:button:1" content=${`Hold ${token_name}`} />
+        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
+      </head></html>`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   //   try {
@@ -194,9 +255,9 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   return new NextResponse(`<!DOCTYPE html><html><head>
           <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/end?username=${username}&contract_address=${contract_address}&verify_follow=${verify_follow}&verify_recast=${verify_recast}&verify_tokens=${verify_tokens}`} />
+          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/end?username=${username}`} />
           <meta property="fc:frame:button:1" content='NFT Minted Successfully' />
-        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}&contract_address=${contract_address}&verify_follow=${verify_follow}&verify_recast=${verify_recast}&verify_tokens=${verify_tokens}`} />
+        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
         </head></html>`);
 }
 
