@@ -13,10 +13,17 @@ export async function GET(request: NextRequest) {
 
   return new ImageResponse(
     (
-      <div tw='flex'>
-        <div tw='p-10 px-20 flex flex-col bg-indigo-600 w-full h-full text-white relative'>
+      <div tw='h-full w-full flex relative bg-black'>
+        <div tw='absolute bottom-0 bg-purple-500 blur-xl h-10 w-full mx-auto'>
+          we
+        </div>
+        <div tw='p-10 px-20 flex flex-col bg-black w-full h-full text-white relative'>
           <p tw='text-xl absolute bottom-10 left-20'>
-            QuestCaster by beyondClub
+            <img
+              width={400}
+              height={50}
+              src='https://questcastertest.vercel.app/images/qlogo.png'
+            />
           </p>
           <h1 tw='font-black text-5xl'>
             Engage with @{username} and FREE MINT!

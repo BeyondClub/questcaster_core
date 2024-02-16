@@ -13,6 +13,7 @@ export async function GET(
     `;
 
     info = quest.rows[0];
+    console.log(info);
 
     const postUrl = `https://questcastertest.vercel.app/api/verify?username=${params.c}&contract_address=${info.contract_address}&verify_follow=${info.verify_follow}&verify_recast=${info.verify_recast}&verify_tokens=${info.verify_tokens}`;
     const imageUrl = `https://questcastertest.vercel.app/api/images/start?username=${params.c}&contract_address=${info.contract_address}&verify_follow=${info.verify_follow}&verify_recast=${info.verify_recast}&verify_tokens=${info.verify_tokens}`;
@@ -21,7 +22,7 @@ export async function GET(
       `<!DOCTYPE html>
       <html>
         <head>
-          <title>Yoinked!</title>
+          <title>Questcaster</title>
           <meta property="og:title" content="Yoink!" />
           <meta property="og:image" content="${imageUrl}" />
           <meta name="fc:frame" content="vNext" />

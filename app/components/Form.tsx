@@ -1,10 +1,11 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SectionHeading from './SectionHeading';
 import ImageUpload from './ImageUpload';
+// import { v4 as uuidv4 } from 'uuid';
 
 const Form = () => {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState('ehtesham');
   const [tokenName, setTokenName] = useState('');
   const [tokenAddress, setTokenAddress] = useState('');
   const [collectibleName, setCollectibleName] = useState('');
@@ -18,37 +19,81 @@ const Form = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  useEffect(() => {
+    console.log(file);
+  }, [file]);
+
   async function addDataToVercelDB(e: { preventDefault: () => void }) {
     e.preventDefault();
 
-    setLoading(true);
+    // setLoading(true);
 
-    try {
-      const response = await fetch(
-        `/api/dba?username=${encodeURIComponent(
-          username
-        )}&token_address=${encodeURIComponent(
-          tokenAddress
-        )}&contract_address=${encodeURIComponent(
-          'contract...x333'
-        )}&verify_follow=${follow}&verify_recast=${recast}&verify_tokens=${token}&token_name=${tokenName}`,
-        {
-          method: 'POST',
-        }
-      );
+    // try {
+    //   const response = await fetch(
+    //     `/api/dba?username=${encodeURIComponent(
+    //       username
+    //     )}&token_address=${encodeURIComponent(
+    //       tokenAddress
+    //     )}&contract_address=${encodeURIComponent(
+    //       'contract...x333'
+    //     )}&verify_follow=${follow}&verify_recast=${recast}&verify_tokens=${token}&token_name=${tokenName}`,
+    //     {
+    //       method: 'POST',
+    //     }
+    //   );
 
-      if (!response.ok) {
-        throw new Error('Failed to add quest');
-      }
+    //   if (!response.ok) {
+    //     throw new Error('Failed to add quest');
+    //   }
 
-      const data = await response.json();
-      console.log('Quest added successfully:', data);
-      setLoading(false);
-      setSuccess(true);
-    } catch (error) {
-      console.error('Error adding quest:', error);
-      setLoading(false);
-    }
+    //   const data = await response.json();
+    //   console.log('Quest added successfully:', data);
+    //   setLoading(false);
+    //   setSuccess(true);
+    // } catch (error) {
+    //   console.error('Error adding quest:', error);
+    //   setLoading(false);
+    // }
+
+    // try {
+    //   const data = await fetch('/api/upload', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json', // assuming the server expects JSON data
+    //       'Access-Control-Allow-Origin': '*',
+    //       'Access-Control-Allow-Credentials': true,
+    //     },
+    //     body: JSON.stringify({
+    //       name: `questcaster_image/${username}`,
+    //       type: file.type,
+    //     }),
+    //   });
+
+    //   console.log(data);
+    //   const newName = `${uuidv4()}.${file.type}`;
+
+    //   const renamedFile = new File([file], newName, {
+    //     type: file.type,
+    //   });
+
+    //   console.log(url);
+
+    //   await fetch(url, {
+    //     method: 'PUT',
+    //     headers: {
+    //       'Content-Type': file.type,
+    //       'Access-Control-Allow-Origin': '*',
+    //     },
+    //     body: renamedFile, // Assuming renamedFile is the body of the request
+    //   });
+
+    //   const filePath =
+    //     process.env.NEXT_PUBLIC_BUCKET_URL + `questcaster_image/${newName}`;
+
+    //   console.log(filePath);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   }
 
   return (
@@ -71,14 +116,17 @@ const Form = () => {
       <div className='mt-3'>
         {follow && (
           <div className='w-full border border-gray-400 px-2 flex justify-between items-center mt-2'>
-            <input
-              type='text'
-              placeholder='Follow @username on Farcaster'
-              className='input sp-input text-white w-full'
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
+            <div className='w-full flex items-center'>
+              <img src='/images/flogo.png' className='w-6' />
+              <input
+                type='text'
+                placeholder='Follow @username on Farcaster'
+                className='input sp-input text-white w-full'
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
             <svg
               xmlns='http://www.w3.org/2000/svg'
               fill='none'
@@ -98,12 +146,16 @@ const Form = () => {
         )}
         {recast && (
           <div className='w-full border border-gray-400 px-2 flex justify-between items-center mt-2'>
-            <input
-              type='text'
-              className='input sp-input text-white w-full'
-              value='Recast the frame on Farcaster'
-              required
-            />
+            <div className='w-full flex items-center'>
+              <img src='/images/flogo.png' className='w-6' />
+              <input
+                type='text'
+                className='input sp-input text-white w-full'
+                value='Recast the frame on Farcaster'
+                required
+              />
+            </div>
+
             <svg
               xmlns='http://www.w3.org/2000/svg'
               fill='none'
@@ -124,7 +176,8 @@ const Form = () => {
         {token && (
           <>
             {' '}
-            <div className='w-full border border-gray-400 px-2 flex justify-between items-center mt-2'>
+            <div className='w-full border border-gray-400 px-2 flex justify-between items-center mt-2 pl-3'>
+              💰
               <input
                 type='text'
                 placeholder='Enter token contract address'
@@ -149,7 +202,8 @@ const Form = () => {
                 />
               </svg>
             </div>
-            <div className='w-full border border-gray-400 px-2 flex justify-between items-center mt-2'>
+            <div className='w-full border border-gray-400 px-2 flex justify-between items-center mt-2 pl-3'>
+              💰
               <input
                 type='text'
                 placeholder='Enter token name eg: $DEGEN'
@@ -165,15 +219,17 @@ const Form = () => {
 
       <div className='grid grid-rows-2 grid-cols-3 mt-5'>
         <div
-          className='rounded-xl cursor-pointer m-1 p-4 px-5 bg-purple-100 text-black font-bold text-sm'
+          className='rounded-xl cursor-pointer m-1 p-4 px-5 bg-purple-100 text-black font-bold text-sm flex items-center'
           onClick={() => setFollow(true)}
         >
+          <img src='/images/flogo.png' className='w-6 mr-2' />
           Follow on Farcaster
         </div>
         <div
-          className='rounded-xl cursor-pointer m-1 p-4 px-5 bg-purple-100 text-black font-bold text-sm'
+          className='rounded-xl cursor-pointer m-1 p-4 px-5 bg-purple-100 text-black font-bold text-sm flex items-center'
           onClick={() => setRecast(true)}
         >
+          <img src='/images/flogo.png' className='w-6 mr-2' />
           Recast on Farcaster
         </div>
         <div
@@ -182,13 +238,15 @@ const Form = () => {
         >
           💰 Token Holders
         </div>
-        <div className='rounded-xl cursor-not-allowed m-1 p-4 px-5 bg-orange-100 text-black font-bold text-sm'>
+        <div className='rounded-xl cursor-not-allowed m-1 p-4 px-5 bg-orange-100 text-black font-bold text-sm flex items-center'>
+          <img src='/images/poap.png' className='w-6 mr-2' />
           POAP Holders
         </div>
-        <div className='rounded-xl cursor-not-allowed m-1 p-4 px-5 bg-green-100 text-black font-bold text-sm'>
+        <div className='rounded-xl cursor-not-allowed m-1 p-4 px-5 bg-green-100 text-black font-bold text-sm flex items-center'>
+          <img src='/images/nft.png' className='w-6 mr-2' />
           Existing NFT Holders
         </div>
-        <div className='rounded-xl m-1 p-4 px-5 bg-zinc-200 text-black font-bold text-sm text-center cursor-not-allowed'>
+        <div className='rounded-xl m-1 p-4 px-5 bg-zinc-200 text-black font-bold text-sm cursor-not-allowed'>
           ⛓️ Onchain Engagement
         </div>
       </div>
@@ -204,7 +262,7 @@ const Form = () => {
           />
         </div>
 
-        <label className='form-control w-full  mt-3'>
+        <label className='form-control w-full'>
           <div className='label'>
             <span className='label-text text-white'>Collectible Name</span>
           </div>

@@ -22,7 +22,7 @@ const ImageUpload = (props: ImageUploadProps) => {
 
   const changeHandler = (files: any) => {
     const file = files[0];
-    setSelectedFile(URL.createObjectURL(file));
+    setSelectedFile(file);
   };
 
   useEffect(() => {
@@ -38,20 +38,11 @@ const ImageUpload = (props: ImageUploadProps) => {
       {props.selected_file ? (
         <div>
           <Input.Wrapper label={label}>
-            {props.selected_file.endsWith('.mp4') ? (
-              <video
-                className='w-full h-full mt-2 rounded-md'
-                src={`${props.selected_file}`}
-                controls={false}
-                autoPlay
-              />
-            ) : (
-              <img
-                className='w-full h-full mt-2 rounded-md'
-                src={`${props.selected_file}`}
-                alt=''
-              />
-            )}
+            <img
+              className='w-full h-full mt-2 rounded-md'
+              src={`${URL.createObjectURL(props.selected_file)}`}
+              alt=''
+            />
 
             <Button
               compact
