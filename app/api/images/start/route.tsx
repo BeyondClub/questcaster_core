@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
   const verify_recast = searchParams.get('verify_recast');
   const verify_tokens = searchParams.get('verify_tokens');
   const token_name = searchParams.get('token_name');
+  const image_url = searchParams.get('image_url');
 
   return new ImageResponse(
     (
@@ -40,7 +41,7 @@ export async function GET(request: NextRequest) {
           <img
             width='256'
             height='256'
-            src={`https://github.com/vercel.png`}
+            src={image_url || ''}
             style={{
               borderRadius: 128,
               marginRight: 120,

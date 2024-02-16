@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-const AWS = require("aws-sdk");
+import { NextResponse } from 'next/server';
+const AWS = require('aws-sdk');
 
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESSKEYID,
@@ -17,23 +17,15 @@ export async function POST(req: Request) {
       Key: name,
       Expires: 600,
       ContentType: type,
-      ACL: "public-read",
+      ACL: 'public-read',
     };
 
-    const url = await s3.getSignedUrlPromise("putObject", fileParams);
+    const url = await s3.getSignedUrlPromise('putObject', fileParams);
 
     return NextResponse.json({ url }, { status: 200 });
   } catch (err) {
-    console.log("main error");
+    console.log('main error');
     console.log(err);
     return NextResponse.json({ err }, { status: 400 });
   }
 }
-
-// export const config = {
-//   api: {
-//     bodyParser: {
-//       sizeLimit: '4mb', // Set desired value here
-//     },
-//   },
-// };

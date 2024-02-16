@@ -13,10 +13,9 @@ export async function GET(
     `;
 
     info = quest.rows[0];
-    console.log(info);
 
     const postUrl = `https://questcastertest.vercel.app/api/verify?username=${params.c}&contract_address=${info.contract_address}&verify_follow=${info.verify_follow}&verify_recast=${info.verify_recast}&verify_tokens=${info.verify_tokens}`;
-    const imageUrl = `https://questcastertest.vercel.app/api/images/start?username=${params.c}&contract_address=${info.contract_address}&verify_follow=${info.verify_follow}&verify_recast=${info.verify_recast}&verify_tokens=${info.verify_tokens}`;
+    const imageUrl = `https://questcastertest.vercel.app/api/images/start?username=${params.c}&contract_address=${info.contract_address}&verify_follow=${info.verify_follow}&verify_recast=${info.verify_recast}&verify_tokens=${info.verify_tokens}&image_url=${info.image_url}`;
 
     return new NextResponse(
       `<!DOCTYPE html>
