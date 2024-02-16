@@ -1,6 +1,7 @@
 import { ImageResponse } from '@vercel/og';
-import Image from 'next/image';
 import { NextRequest } from 'next/server';
+
+export const runtime = 'edge';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -10,19 +11,9 @@ export async function GET(request: NextRequest) {
   const verify_tokens = searchParams.get('verify_tokens');
   const token_name = searchParams.get('token_name');
 
-  const imageData = await fetch(new URL('./bg.png', import.meta.url)).then(
-    (res) => res.arrayBuffer()
-  );
-
   return new ImageResponse(
     (
       <div tw='flex'>
-        <Image
-          src={`${process.env.VERCEL_URL}/bg.png`}
-          alt='bg'
-          height={630}
-          width={1200}
-        />
         <div tw='p-10 px-20 flex flex-col bg-indigo-600 w-full h-full text-white relative'>
           <p tw='text-xl absolute bottom-10 left-20'>
             QuestCaster by beyondClub
