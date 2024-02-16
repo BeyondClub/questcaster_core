@@ -1,8 +1,9 @@
+//@ts-nocheck
 'use client';
 import React, { useEffect, useState } from 'react';
 import SectionHeading from './SectionHeading';
 import ImageUpload from './ImageUpload';
-// import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 const Form = () => {
   const [username, setUsername] = useState('ehtesham');
@@ -55,45 +56,46 @@ const Form = () => {
     //   setLoading(false);
     // }
 
-    // try {
-    //   const data = await fetch('/api/upload', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json', // assuming the server expects JSON data
-    //       'Access-Control-Allow-Origin': '*',
-    //       'Access-Control-Allow-Credentials': true,
-    //     },
-    //     body: JSON.stringify({
-    //       name: `questcaster_image/${username}`,
-    //       type: file.type,
-    //     }),
-    //   });
+    try {
+      const data = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // assuming the server expects JSON data
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true,
+        },
+        body: JSON.stringify({
+          name: `questcaster_image/${username}`,
+          type: file.type,
+        }),
+      });
 
-    //   console.log(data);
-    //   const newName = `${uuidv4()}.${file.type}`;
+      const res = await data.json();
+      const url = data.url;
+      const newName = `${uuidv4()}.${file.type}`;
 
-    //   const renamedFile = new File([file], newName, {
-    //     type: file.type,
-    //   });
+      const renamedFile = new File([file], newName, {
+        type: file.type,
+      });
 
-    //   console.log(url);
+      console.log(url);
 
-    //   await fetch(url, {
-    //     method: 'PUT',
-    //     headers: {
-    //       'Content-Type': file.type,
-    //       'Access-Control-Allow-Origin': '*',
-    //     },
-    //     body: renamedFile, // Assuming renamedFile is the body of the request
-    //   });
+      await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': file.type,
+          'Access-Control-Allow-Origin': '*',
+        },
+        body: renamedFile, // Assuming renamedFile is the body of the request
+      });
 
-    //   const filePath =
-    //     process.env.NEXT_PUBLIC_BUCKET_URL + `questcaster_image/${newName}`;
+      const filePath =
+        process.env.NEXT_PUBLIC_BUCKET_URL + `questcaster_image/${newName}`;
 
-    //   console.log(filePath);
-    // } catch (error) {
-    //   console.log(error);
-    // }
+      console.log(filePath);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
