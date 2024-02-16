@@ -1,16 +1,21 @@
 import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
+import { sql } from '@vercel/postgres';
 
 export const runtime = 'edge';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const username: string = searchParams.get('username') || '';
-  const verify_follow = searchParams.get('verify_follow');
-  const verify_recast = searchParams.get('verify_recast');
-  const verify_tokens = searchParams.get('verify_tokens');
-  const token_name = searchParams.get('token_name');
-  const image_url = searchParams.get('image_url');
+
+  const quest = await sql`
+      SELECT * FROM Quests WHERE Username = ${username};
+    `;
+
+  const { verify_follow, verify_recast, verify_tokens, token_name, image_url } =
+    quest.rows[0];
+
+  console.log(quest.rows[0]);
 
   return new ImageResponse(
     (
@@ -27,26 +32,18 @@ export async function GET(request: NextRequest) {
           <div tw='flex flex-col'>
             <h2 tw='text-4xl'>Quests</h2>
             <ol tw='flex flex-col'>
-              {verify_follow == 'true' && (
+              {verify_follow === true && (
                 <li tw='text-2xl'>- Follow @{username}</li>
               )}
-              {verify_recast == 'true' && (
+              {verify_recast === true && (
                 <li tw='text-2xl'>- Recast this post</li>
               )}
-              {verify_tokens == 'true' && (
+              {verify_tokens === true && (
                 <li tw='text-2xl'>- Hold {token_name} tokens</li>
               )}
             </ol>
           </div>
-          <img
-            width='256'
-            height='256'
-            src={image_url || ''}
-            style={{
-              borderRadius: 128,
-              marginRight: 120,
-            }}
-          />
+          <img width='256' height='256' src={image_url || ''} />
         </div>
       </div>
     ),

@@ -8,14 +8,8 @@ export async function GET(
   let info = null;
 
   try {
-    const quest = await sql`
-      SELECT * FROM Quests WHERE Username = ${params.c};
-    `;
-
-    info = quest.rows[0];
-
-    const postUrl = `https://questcastertest.vercel.app/api/verify?username=${params.c}&contract_address=${info.contract_address}&verify_follow=${info.verify_follow}&verify_recast=${info.verify_recast}&verify_tokens=${info.verify_tokens}`;
-    const imageUrl = `https://questcastertest.vercel.app/api/images/start?username=${params.c}&contract_address=${info.contract_address}&verify_follow=${info.verify_follow}&verify_recast=${info.verify_recast}&verify_tokens=${info.verify_tokens}&image_url=${info.image_url}`;
+    const postUrl = `https://questcastertest.vercel.app/api/verify?username=${params.c}`;
+    const imageUrl = `https://questcastertest.vercel.app/api/images/start?username=${params.c}`;
 
     return new NextResponse(
       `<!DOCTYPE html>
