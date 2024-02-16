@@ -1,13 +1,12 @@
-import { NextResponse } from 'next/server';
-const AWS = require('aws-sdk');
-
-const s3 = new AWS.S3();
+import { NextResponse } from "next/server";
+const AWS = require("aws-sdk");
 
 AWS.config.update({
-  region: process.env.AWS_DEFAULTREGION,
   accessKeyId: process.env.AWS_ACCESSKEYID,
   secretAccessKey: process.env.AWS_SECRETACCESSKEY,
 });
+
+const s3 = new AWS.S3();
 
 export async function POST(req: Request) {
   try {
@@ -18,16 +17,16 @@ export async function POST(req: Request) {
       Key: name,
       Expires: 600,
       ContentType: type,
-      ACL: 'public-read',
+      ACL: "public-read",
     };
 
-    const url = await s3.getSignedUrlPromise('putObject', fileParams);
+    const url = await s3.getSignedUrlPromise("putObject", fileParams);
 
-    NextResponse.json({ url }, { status: 200 });
+    return NextResponse.json({ url }, { status: 200 });
   } catch (err) {
-    console.log('main error');
+    console.log("main error");
     console.log(err);
-    NextResponse.json({ err }, { status: 400 });
+    return NextResponse.json({ err }, { status: 400 });
   }
 }
 
