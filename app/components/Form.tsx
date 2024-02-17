@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { createQuest } from '../lib/contract';
 import { create } from 'domain';
 
-const Form = ({ setSuccess }) => {
+const Form = ({ setSuccess, setLink }) => {
   const [username, setUsername] = useState('');
   const [tokenName, setTokenName] = useState('');
   const [tokenAddress, setTokenAddress] = useState('');

@@ -11,7 +11,7 @@ const page = () => {
       {!success && (
         <div className='w-[800px] mx-auto bg-black border rounded-xl shadow-xl p-7 px-7'>
           <h1 className='font-medium text-3xl'>Create a Frame Quest</h1>
-          <Form setSuccess={setSuccess} />
+          <Form setSuccess={setSuccess} setLink={setLink} />
         </div>
       )}
       {success && (
