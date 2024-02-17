@@ -205,25 +205,6 @@ export async function POST(req: NextRequest): Promise<Response> {
       console.log(error);
     }
   }
-<<<<<<< HEAD
-  //   try {
-  //     // @dev mint part here
-  //     const provider = new ethers.providers.JsonRpcProvider(
-  //       process.env.BASE_ALCHEMY_PROVIDER
-  //     );
-  //     const quest1Contract = new ethers.Contract(
-  //       lockAddress.quest1Address,
-  //       unlockABI,
-  //       provider
-  //     );
-  //     const quest2Contract = new ethers.Contract(
-  //       lockAddress.quest2Address,
-  //       unlockABI,
-  //       provider
-  //     );
-  //     const quest1 = await quest1Contract.balanceOf(accountAddress);
-  //     const quest2 = await quest2Contract.balanceOf(accountAddress);
-=======
 
     try {
       // @dev mint part here
@@ -233,7 +214,6 @@ export async function POST(req: NextRequest): Promise<Response> {
       const questContract = new ethers.Contract(contract_address, questCasterABI, wallet)
       const mint = await questContract.safeMint(accountAddress)
       console.log(mint)
->>>>>>> 5bf8324 (add mint part)
 
       
     } catch (error) {
