@@ -124,7 +124,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   }`
     );
 
-    console.log(data);
+    console.log(data.Wallet.socialFollowings.Following);
 
     if (data.Wallet.socialFollowings.Following == null) {
       return new NextResponse(`<!DOCTYPE html><html><head>
