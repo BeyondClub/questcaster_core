@@ -46,39 +46,14 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   try {
     const body: { trustedData?: { messageBytes?: string } } = await req.json();
-    accountAddress = await getFrameAccountAddress(body, {
-      NEYNAR_API_KEY: 'NEYNAR_API_DOCS',
-    });
     messageBytes = body?.trustedData?.messageBytes;
   } catch (err) {
     console.error(err);
   }
 
-  const byteArray = new Uint8Array(
-    messageBytes?.match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16)) || []
-  );
-
-  // if (accountAddress == null) {
-  //   return new NextResponse(`<!DOCTYPE html><html><head>
-  //         <meta property="fc:frame" content="vNext" />
-  //         <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
-  //         <meta property="fc:frame:button:1" content='Add Wallet to Farcaster' />
-  //       <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
-  //       </head></html>`);
-  // }
+  console.log(messageBytes);
 
   try {
-    // const response = await fetch(
-    //   'https://nemes.farcaster.xyz:2281/v1/validateMessage',
-    //   {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/octet-stream',
-    //     },
-    //     body: byteArray,
-    //   }
-    // );
-
     const options = {
       method: 'POST',
       headers: {
@@ -93,16 +68,28 @@ export async function POST(req: NextRequest): Promise<Response> {
       }),
     };
 
-    const response = await fetch('https://api.neynar.com/v2/farcaster/frame/validate', options)
+    const response = await fetch(
+      'https://api.neynar.com/v2/farcaster/frame/validate',
+      options
+    );
     const body = await response.json();
-    // fid = body.message.data.fid;
-    // hash = body.message.data.frameActionBody.castId.hash;
-    // option = body.message.data.frameActionBody.buttonIndex;
-    // console.log(hash, fid);
-    console.log(body)
+    fid = body.action.interactor.fid;
+    accountAddress = body.action.interactor.verifications[0];
+    hash = body.cast.hash;
+    console.log(fid, accountAddress, hash);
+    console.log(body.cast.viewer_context);
   } catch (error) {
     console.error('Error:', error);
   }
+
+  // if (accountAddress == null) {
+  //   return new NextResponse(`<!DOCTYPE html><html><head>
+  //         <meta property="fc:frame" content="vNext" />
+  //         <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
+  //         <meta property="fc:frame:button:1" content='Add Wallet to Farcaster' />
+  //       <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
+  //       </head></html>`);
+  // }
 
   // verify follow with Airstack
   //   if (verify_follow === true) {
