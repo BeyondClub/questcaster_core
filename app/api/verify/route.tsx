@@ -43,6 +43,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   let fid = null;
   let option = null;
   let hash = null;
+  let recasts = [];
 
   try {
     const body: { trustedData?: { messageBytes?: string } } = await req.json();
@@ -75,9 +76,11 @@ export async function POST(req: NextRequest): Promise<Response> {
     const body = await response.json();
     fid = body.action.interactor.fid;
     accountAddress = body.action.interactor.verifications[0];
-    hash = body.cast.hash;
-    console.log(fid, accountAddress, hash);
-    console.log(body.cast.viewer_context);
+    recasts = body.action.cast.reactions.recasts;
+
+    console.log(fid);
+    console.log(recasts);
+    console.log(accountAddress);
   } catch (error) {
     console.error('Error:', error);
   }
