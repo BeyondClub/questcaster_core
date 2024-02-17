@@ -68,21 +68,38 @@ export async function POST(req: NextRequest): Promise<Response> {
   // }
 
   try {
-    const response = await fetch(
-      'https://nemes.farcaster.xyz:2281/v1/validateMessage',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/octet-stream',
-        },
-        body: byteArray,
-      }
-    );
+    // const response = await fetch(
+    //   'https://nemes.farcaster.xyz:2281/v1/validateMessage',
+    //   {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/octet-stream',
+    //     },
+    //     body: byteArray,
+    //   }
+    // );
+
+    const options = {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        api_key: 'NEYNAR_API_DOCS',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        cast_reaction_context: true,
+        follow_context: true,
+        message_bytes_in_hex: messageBytes,
+      }),
+    };
+
+    const response = await fetch('https://api.neynar.com/v2/farcaster/frame/validate', options)
     const body = await response.json();
-    fid = body.message.data.fid;
-    hash = body.message.data.frameActionBody.castId.hash;
-    option = body.message.data.frameActionBody.buttonIndex;
-    console.log(hash, fid);
+    // fid = body.message.data.fid;
+    // hash = body.message.data.frameActionBody.castId.hash;
+    // option = body.message.data.frameActionBody.buttonIndex;
+    // console.log(hash, fid);
+    console.log(body)
   } catch (error) {
     console.error('Error:', error);
   }
