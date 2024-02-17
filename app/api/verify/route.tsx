@@ -40,8 +40,6 @@ export async function POST(req: NextRequest): Promise<Response> {
   let accountAddress = null;
   let messageBytes = null;
   let fid = null;
-  let option = null;
-  let hash = null;
   let recasted = false;
   let following = false;
 
@@ -104,47 +102,38 @@ export async function POST(req: NextRequest): Promise<Response> {
         </head></html>`);
   }
 
-  if (verify_follow === true && following === false) {
-    return new NextResponse(`<!DOCTYPE html><html><head>
-          <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
-          <meta property="fc:frame:button:1" content='Follow OP' />
-        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
-        </head></html>`);
-  }
-
   // verify follow with Airstack
-  //   if (verify_follow === true) {
-  //     const { data, error } = await fetchQuery(
-  //       `query isFollowing {
-  //   Wallet(input: {identity: "fc_fname:${username}", blockchain: ethereum}) {
-  //     socialFollowings(
-  //       input: {filter: {identity: {_eq: "fc_fid:${fid}"}, dappName: {_eq: farcaster}}}
-  //     ) {
-  //       Following {
-  //         followerAddress {
-  //           addresses
-  //           socials {
-  //             dappName
-  //             profileName
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // }`
-  //     );
+  if (verify_follow === true) {
+    const { data, error } = await fetchQuery(
+      `query isFollowing {
+    Wallet(input: {identity: "fc_fname:${username}", blockchain: ethereum}) {
+      socialFollowings(
+        input: {filter: {identity: {_eq: "fc_fid:${fid}"}, dappName: {_eq: farcaster}}}
+      ) {
+        Following {
+          followerAddress {
+            addresses
+            socials {
+              dappName
+              profileName
+            }
+          }
+        }
+      }
+    }
+  }`
+    );
 
-  //   if (data.Wallet.socialFollowings.Following == null) {
-  //     return new NextResponse(`<!DOCTYPE html><html><head>
-  //       <meta property="fc:frame" content="vNext" />
-  //         <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
-  //       <meta property="fc:frame:button:1" content=${`Follow ${username}`} />
-  //       <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
-  //     </head></html>`);
-  //   }
-  //   console.log('verified follow');
-  // }
+    if (data.Wallet.socialFollowings.Following == null) {
+      return new NextResponse(`<!DOCTYPE html><html><head>
+        <meta property="fc:frame" content="vNext" />
+          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
+        <meta property="fc:frame:button:1" content=${`Follow ${username}`} />
+        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
+      </head></html>`);
+    }
+    console.log('verified follow');
+  }
 
   if (verify_tokens === true && token_address !== null) {
     try {
