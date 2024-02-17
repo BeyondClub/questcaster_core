@@ -6,7 +6,8 @@ import SectionHeading from './SectionHeading';
 import { v4 as uuidv4 } from 'uuid';
 import { createQuest } from '../lib/contract';
 import { create } from 'domain';
-const Form = () => {
+
+const Form = ({ setSuccess }) => {
   const [username, setUsername] = useState('');
   const [tokenName, setTokenName] = useState('');
   const [tokenAddress, setTokenAddress] = useState('');
@@ -19,7 +20,6 @@ const Form = () => {
   const [recast, setRecast] = useState(false);
   const [token, setToken] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
 
   async function addDataToVercelDB(e: { preventDefault: () => void }) {
     e.preventDefault();
@@ -33,7 +33,12 @@ const Form = () => {
     const image_url = await fileUpload(file);
 
     try {
-      const questAddress = createQuest({collectibleName, collectibleSymbol, totalAmount, maxMint})
+      // const questAddress = await createQuest({
+      //   collectibleName,
+      //   collectibleSymbol,
+      //   totalAmount,
+      //   maxMint,
+      // });
 
       const response = await fetch('/api/dba', {
         method: 'POST',
@@ -46,7 +51,7 @@ const Form = () => {
           username,
           image_url,
           token_name: tokenName,
-          contract_address: questAddress,
+          contract_address: 'jhbhb',
           verify_recast: recast,
           verify_follow: follow,
           verify_tokens: token,
@@ -59,6 +64,7 @@ const Form = () => {
 
       const data = await response.json();
       console.log('Quest added successfully:', data);
+      setLink(`https://questcastertest.vercel.app/api/${username}`);
       setLoading(false);
       setSuccess(true);
     } catch (error) {
@@ -148,7 +154,7 @@ const Form = () => {
               <img src='/images/flogo.png' className='w-6' />
               <input
                 type='text'
-                placeholder='Follow @username on Farcaster'
+                placeholder='Enter your @username on Farcaster'
                 className='input sp-input text-white w-full'
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -375,7 +381,8 @@ const Form = () => {
         </label>
       </div>
       <button className='btn rounded-full bg-purple-700 mt-5'>
-        Generate Link
+        {loading && <span className='loading loading-spinner'></span>}
+        {!loading && 'Generate Link'}
       </button>
     </form>
   );

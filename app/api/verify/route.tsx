@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchQuery, init } from '@airstack/node';
-import { getFrameAccountAddress } from '@coinbase/onchainkit';
 import { sql } from '@vercel/postgres';
 // import { WalletService } from '@unlock-protocol/unlock-js';
 // import { chainConfig, lockAddress, unlockABI } from '@/app/config';
@@ -43,7 +42,8 @@ export async function POST(req: NextRequest): Promise<Response> {
   let fid = null;
   let option = null;
   let hash = null;
-  let recasts = [];
+  let recasted = false;
+  let following = false;
 
   try {
     const body: { trustedData?: { messageBytes?: string } } = await req.json();
@@ -76,23 +76,42 @@ export async function POST(req: NextRequest): Promise<Response> {
     const body = await response.json();
     fid = body.action.interactor.fid;
     accountAddress = body.action.interactor.verifications[0];
-    recasts = body.action.cast.reactions.recasts;
+    recasted = body.action.cast.viewer_context.recasted;
+    following = body.action.interactor.viewer_context.following;
 
     console.log(fid);
-    console.log(recasts);
+    console.log(recasted);
     console.log(accountAddress);
   } catch (error) {
     console.error('Error:', error);
   }
 
-  // if (accountAddress == null) {
-  //   return new NextResponse(`<!DOCTYPE html><html><head>
-  //         <meta property="fc:frame" content="vNext" />
-  //         <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
-  //         <meta property="fc:frame:button:1" content='Add Wallet to Farcaster' />
-  //       <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
-  //       </head></html>`);
-  // }
+  if (accountAddress == null) {
+    return new NextResponse(`<!DOCTYPE html><html><head>
+          <meta property="fc:frame" content="vNext" />
+          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
+          <meta property="fc:frame:button:1" content='Add Wallet to Farcaster' />
+        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
+        </head></html>`);
+  }
+
+  if (verify_recast === true && recasted === false) {
+    return new NextResponse(`<!DOCTYPE html><html><head>
+          <meta property="fc:frame" content="vNext" />
+          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
+          <meta property="fc:frame:button:1" content='Recast Post' />
+        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
+        </head></html>`);
+  }
+
+  if (verify_follow === true && following === false) {
+    return new NextResponse(`<!DOCTYPE html><html><head>
+          <meta property="fc:frame" content="vNext" />
+          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
+          <meta property="fc:frame:button:1" content='Follow OP' />
+        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
+        </head></html>`);
+  }
 
   // verify follow with Airstack
   //   if (verify_follow === true) {
@@ -127,110 +146,77 @@ export async function POST(req: NextRequest): Promise<Response> {
   //   console.log('verified follow');
   // }
 
-  // if (verify_recast === true) {
-  //   try {
-  //     const response = await fetch(
-  //       `https://api.neynar.com/v2/farcaster/cast?identifier=${hash}&type=hash`,
-  //       {
-  //         method: 'GET',
-  //         headers: { accept: 'application/json', api_key: 'NEYNAR_API_DOCS' },
-  //       }
-  //     );
+  if (verify_tokens === true && token_address !== null) {
+    try {
+      const { data, error } = await fetchQuery(
+        `query MyQuery {
+  Base: TokenBalances(
+    input: {filter: {owner: {_eq: ${accountAddress}}, tokenAddress: {_eq: ${token_address}}}, blockchain: base, limit: 50}
+  ) {
+    TokenBalance {
+      formattedAmount
+    }
+  }
+  Ethereum: TokenBalances(
+    input: {filter: {owner: {_eq: ${accountAddress}}, tokenAddress: {_eq: ${token_address}}}, blockchain: ethereum, limit: 50}
+  ) {
+    TokenBalance {
+      formattedAmount
+    }
+  }
+  Polygon: TokenBalances(
+    input: {filter: {owner: {_eq: ${accountAddress}}, tokenAddress: {_eq: ${token_address}}}, blockchain: polygon, limit: 50}
+  ) {
+    TokenBalance {
+      formattedAmount
+    }
+  }
+  }`
+      );
 
-  //     const body = await response.json();
-  //     const recasts = body?.cast?.reactions?.recasts;
-  //     console.log(recasts);
-  //     let recasted = false;
+      let exists = false;
+      if (
+        data.Base.TokenBalance !== null ||
+        data.Ethereum.TokenBalance !== null ||
+        data.Polygon.TokenBalance !== null
+      ) {
+        exists = true;
+      }
 
-  //     for (const item of recasts) {
-  //       if (item.fid === fid) {
-  //         recasted = true;
-  //         break;
-  //       }
-  //     }
+      if (!exists) {
+        return new NextResponse(`<!DOCTYPE html><html><head>
+        <meta property="fc:frame" content="vNext" />
+          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
+        <meta property="fc:frame:button:1" content=${`Hold ${token_name}`} />
+        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
+      </head></html>`);
+      }
+      console.log('verified tokens');
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  //     if (!recasted && verify_recast == 'true') {
-  //       return new NextResponse(`<!DOCTYPE html><html><head>
-  //         <meta property="fc:frame" content="vNext" />
-  //         <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
-  //         <meta property="fc:frame:button:1" content='Recast Post 🔂' />
-  //       <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
-  //       </head></html>`);
-  //     }
-  //     console.log('verified recast');
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
+  try {
+    // @dev mint part here
 
-  // if (verify_tokens === true && token_address !== null) {
-  //   try {
-  //     const { data, error } = await fetchQuery(
-  //       `query MyQuery {
-  // Base: TokenBalances(
-  //   input: {filter: {owner: {_eq: ${accountAddress}}, tokenAddress: {_eq: ${token_address}}}, blockchain: base, limit: 50}
-  // ) {
-  //   TokenBalance {
-  //     formattedAmount
-  //   }
-  // }
-  // Ethereum: TokenBalances(
-  //   input: {filter: {owner: {_eq: ${accountAddress}}, tokenAddress: {_eq: ${token_address}}}, blockchain: ethereum, limit: 50}
-  // ) {
-  //   TokenBalance {
-  //     formattedAmount
-  //   }
-  // }
-  // Polygon: TokenBalances(
-  //   input: {filter: {owner: {_eq: ${accountAddress}}, tokenAddress: {_eq: ${token_address}}}, blockchain: polygon, limit: 50}
-  // ) {
-  //   TokenBalance {
-  //     formattedAmount
-  //   }
-  // }
-  // }`
-  //     );
-
-  //     let exists = false;
-  //     if (
-  //       data.Base.TokenBalance !== null ||
-  //       data.Ethereum.TokenBalance !== null ||
-  //       data.Polygon.TokenBalance !== null
-  //     ) {
-  //       exists = true;
-  //     }
-
-  //     if (!exists) {
-  //       return new NextResponse(`<!DOCTYPE html><html><head>
-  //       <meta property="fc:frame" content="vNext" />
-  //         <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
-  //       <meta property="fc:frame:button:1" content=${`Hold ${token_name}`} />
-  //       <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
-  //     </head></html>`);
-  //     }
-  //     console.log('verified tokens');
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-
-  // try {
-  //   // @dev mint part here
-
-  //   const provider = new ethers.providers.JsonRpcProvider(process.env.PROVIDER)
-  //   const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
-  //   const questContract = new ethers.Contract(contract_address, questCasterABI, wallet)
-  //   const mint = await questContract.safeMint(accountAddress)
-  //   console.log(mint)
-
-  // } catch (error) {
-  //   return new NextResponse(`<!DOCTYPE html><html><head>
-  //         <meta property="fc:frame" content="vNext" />
-  //         <meta property="fc:frame:image" content="https://beyondclubframes.vercel.app/success.png" />
-  //         <meta property="fc:frame:button:1" content='Error with Minting' />
-  //         <meta property="fc:frame:post_url" content="https://beyondclubframes.vercel.app/api/frame" />
-  //       </head></html>`);
-  // }
+    const provider = new ethers.providers.JsonRpcProvider(process.env.PROVIDER);
+    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
+    const questContract = new ethers.Contract(
+      contract_address,
+      questCasterABI,
+      wallet
+    );
+    const mint = await questContract.safeMint(accountAddress);
+    console.log(mint);
+  } catch (error) {
+    return new NextResponse(`<!DOCTYPE html><html><head>
+          <meta property="fc:frame" content="vNext" />
+          <meta property="fc:frame:image" content="https://beyondclubframes.vercel.app/success.png" />
+          <meta property="fc:frame:button:1" content='Error with Minting' />
+          <meta property="fc:frame:post_url" content="https://beyondclubframes.vercel.app/api/frame" />
+        </head></html>`);
+  }
 
   return new NextResponse(`<!DOCTYPE html><html><head>
           <meta property="fc:frame" content="vNext" />
