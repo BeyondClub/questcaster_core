@@ -4,7 +4,8 @@ import { getFrameAccountAddress } from '@coinbase/onchainkit';
 import { sql } from '@vercel/postgres';
 // import { WalletService } from '@unlock-protocol/unlock-js';
 // import { chainConfig, lockAddress, unlockABI } from '@/app/config';
-// import { ethers } from 'ethers';
+import { ethers } from 'ethers';
+import { questCasterABI } from '@/app/constants';
 
 export async function POST(req: NextRequest): Promise<Response> {
   const { searchParams } = new URL(req.url);
@@ -204,6 +205,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       console.log(error);
     }
   }
+<<<<<<< HEAD
   //   try {
   //     // @dev mint part here
   //     const provider = new ethers.providers.JsonRpcProvider(
@@ -221,40 +223,27 @@ export async function POST(req: NextRequest): Promise<Response> {
   //     );
   //     const quest1 = await quest1Contract.balanceOf(accountAddress);
   //     const quest2 = await quest2Contract.balanceOf(accountAddress);
+=======
 
-  //     console.log(quest1, quest2);
+    try {
+      // @dev mint part here
+  
+      const provider = new ethers.providers.JsonRpcProvider(process.env.PROVIDER)
+      const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
+      const questContract = new ethers.Contract(contract_address, questCasterABI, wallet)
+      const mint = await questContract.safeMint(accountAddress)
+      console.log(mint)
+>>>>>>> 5bf8324 (add mint part)
 
-  //     if (quest1 == 0 && quest2 == 0) {
-  //       const provider = new ethers.providers.JsonRpcProvider(
-  //         process.env.BASE_ALCHEMY_PROVIDER
-  //       );
-  //       const wallet = new ethers.Wallet(
-  //         process.env.WALLET_PRIVATE_KEY!,
-  //         provider
-  //       );
-  //       console.log(wallet.address);
-
-  //       const mintQuest1 = await quest1Contract.grantKeys(
-  //         [accountAddress],
-  //         [ethers.constants.MaxUint256],
-  //         [accountAddress]
-  //       );
-  //       const mintQuest2 = await quest2Contract.grantKeys(
-  //         [accountAddress],
-  //         [ethers.constants.MaxUint256],
-  //         [accountAddress]
-  //       );
-
-  //       console.log(mintQuest1, mintQuest2);
-  //     }
-  //   } catch (error) {
-  //     return new NextResponse(`<!DOCTYPE html><html><head>
-  //           <meta property="fc:frame" content="vNext" />
-  //           <meta property="fc:frame:image" content="https://beyondclubframes.vercel.app/success.png" />
-  //           <meta property="fc:frame:button:1" content='Error with Minting' />
-  //           <meta property="fc:frame:post_url" content="https://beyondclubframes.vercel.app/api/frame" />
-  //         </head></html>`);
-  //   }
+      
+    } catch (error) {
+      return new NextResponse(`<!DOCTYPE html><html><head>
+            <meta property="fc:frame" content="vNext" />
+            <meta property="fc:frame:image" content="https://beyondclubframes.vercel.app/success.png" />
+            <meta property="fc:frame:button:1" content='Error with Minting' />
+            <meta property="fc:frame:post_url" content="https://beyondclubframes.vercel.app/api/frame" />
+          </head></html>`);
+    }
 
   return new NextResponse(`<!DOCTYPE html><html><head>
           <meta property="fc:frame" content="vNext" />

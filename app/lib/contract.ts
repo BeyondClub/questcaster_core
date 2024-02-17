@@ -24,10 +24,10 @@ export const createQuest = async ({
     )
 
     const receipt = await newQuest.wait()
-	const questAddress = receipt.logs[0].address
-	const questContract = new ethers.Contract(questAddress, questCasterABI, wallet)
+    const questAddress = receipt.logs[0].address
+    const questContract = new ethers.Contract(questAddress, questCasterABI, wallet)
     // @dev pass in base uri here
-	const _setURI = await questContract.setURI("")
+    const _setURI = await questContract.setURI("")
 
     console.log("Quest successfully created at address: " + questAddress)
     return questAddress
