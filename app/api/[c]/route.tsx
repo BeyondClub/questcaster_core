@@ -16,7 +16,7 @@ export async function GET(
       <html>
         <head>
           <title>Questcaster</title>
-          <meta property="og:title" content="Yoink!" />
+          <meta property="og:title" content="Questcaster!" />
           <meta property="og:image" content="${imageUrl}" />
           <meta name="fc:frame" content="vNext" />
           <meta name="fc:frame:image" content="${imageUrl}" />

@@ -21,7 +21,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     token_name,
     image_url,
     token_address,
-    contract_address       
+    contract_address,
   } = quest.rows[0];
 
   console.log(quest.rows[0]);
@@ -115,6 +115,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
       </head></html>`);
     }
+    console.log('verified follow');
   }
 
   if (verify_recast === true) {
@@ -147,6 +148,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
         </head></html>`);
       }
+      console.log('verified recast');
     } catch (error) {
       console.log(error);
     }
@@ -197,11 +199,11 @@ export async function POST(req: NextRequest): Promise<Response> {
         <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
       </head></html>`);
       }
+      console.log('verified tokens');
     } catch (error) {
       console.log(error);
     }
   }
-
   //   try {
   //     // @dev mint part here
   //     const provider = new ethers.providers.JsonRpcProvider(
@@ -256,9 +258,9 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   return new NextResponse(`<!DOCTYPE html><html><head>
           <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/end?username=${username}`} />
+          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/end`} />
           <meta property="fc:frame:button:1" content='NFT Minted Successfully' />
-        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?username=${username}`} />
+        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify`} />
         </head></html>`);
 }
 
