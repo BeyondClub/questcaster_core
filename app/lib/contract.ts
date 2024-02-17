@@ -2,13 +2,11 @@ import { ethers } from "ethers";
 import { questFactoryAddress, questCasterABI, questFactoryABI } from "../constants";
 
 export const createQuest = async ({
-    deployer,
     questName,
     symbol,
     maxSupply,
     mintLimit
 }: {
-    deployer: string,
     questName: string,
     symbol: string,
     maxSupply: Number,
@@ -18,7 +16,7 @@ export const createQuest = async ({
     const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
     const factoryContract = new ethers.Contract(questFactoryAddress, questFactoryABI, wallet)
     const newQuest = await factoryContract.deployQuest(
-        deployer,
+        wallet.address,
         questName,
         symbol,
         maxSupply,
