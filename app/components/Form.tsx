@@ -4,7 +4,8 @@ import { useState } from 'react';
 import ImageUpload from './ImageUpload';
 import SectionHeading from './SectionHeading';
 import { v4 as uuidv4 } from 'uuid';
-
+import { createQuest } from '../lib/contract';
+import { create } from 'domain';
 const Form = () => {
   const [username, setUsername] = useState('');
   const [tokenName, setTokenName] = useState('');
@@ -45,6 +46,8 @@ const Form = () => {
       //   }
       // );
 
+      const questAddress = createQuest({collectibleName, collectibleSymbol, totalAmount, maxMint})
+
       const response = await fetch('/api/dba', {
         method: 'POST',
         headers: {
@@ -56,7 +59,7 @@ const Form = () => {
           username,
           image_url,
           token_name: tokenName,
-          contract_address: '0x1234567890',
+          contract_address: questAddress,
           verify_recast: recast,
           verify_follow: follow,
           verify_tokens: token,

@@ -32,4 +32,5 @@ export const createQuest = async ({
 	const _setURI = await questContract.setURI("")
 
     console.log("Quest successfully created at address: " + questAddress)
+    return questAddress
 }
