@@ -33,19 +33,6 @@ const Form = () => {
     const image_url = await fileUpload(file);
 
     try {
-      // const response = await fetch(
-      //   `/api/dba?username=${encodeURIComponent(
-      //     username
-      //   )}&token_address=${encodeURIComponent(
-      //     tokenAddress
-      //   )}&contract_address=${encodeURIComponent(
-      //     'contract...x333'
-      //   )}&verify_follow=${follow}&verify_recast=${recast}&verify_tokens=${token}&token_name=${tokenName}`,
-      //   {
-      //     method: 'POST',
-      //   }
-      // );
-
       const questAddress = createQuest({collectibleName, collectibleSymbol, totalAmount, maxMint})
 
       const response = await fetch('/api/dba', {

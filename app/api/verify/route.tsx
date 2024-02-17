@@ -21,6 +21,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     token_name,
     image_url,
     token_address,
+    contract_address       
   } = quest.rows[0];
 
   console.log(quest.rows[0]);
