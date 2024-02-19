@@ -8,8 +8,8 @@ export async function GET(
   let info = null;
 
   try {
-    const postUrl = `https://questcastertest.vercel.app/api/verify?username=${params.c}`;
-    const imageUrl = `https://questcastertest.vercel.app/api/images/start?username=${params.c}`;
+    const postUrl = `https://questcastertest.vercel.app/api/verify?id=${params.c}`;
+    const imageUrl = `https://questcastertest.vercel.app/api/images/start?id=${params.c}`;
 
     return new NextResponse(
       `<!DOCTYPE html>

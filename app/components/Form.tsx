@@ -33,13 +33,14 @@ const Form = ({ setSuccess, setLink }) => {
     const image_url = await fileUpload(file);
 
     try {
-      // const questAddress = await createQuest({
-      //   collectibleName,
-      //   collectibleSymbol,
-      //   totalAmount,
-      //   maxMint,
-      // });
+      const questAddress = await createQuest({
+        collectibleName,
+        collectibleSymbol,
+        totalAmount,
+        maxMint,
+      });
 
+      const id = uuidv4();
       const response = await fetch('/api/dba', {
         method: 'POST',
         headers: {
@@ -48,10 +49,11 @@ const Form = ({ setSuccess, setLink }) => {
           'Access-Control-Allow-Credentials': true,
         },
         body: JSON.stringify({
+          id: id,
           username,
           image_url,
           token_name: tokenName,
-          contract_address: 'jhbhb',
+          contract_address: questAddress,
           verify_recast: recast,
           verify_follow: follow,
           verify_tokens: token,
@@ -64,7 +66,7 @@ const Form = ({ setSuccess, setLink }) => {
 
       const data = await response.json();
       console.log('Quest added successfully:', data);
-      setLink(`https://questcastertest.vercel.app/api/${username}`);
+      setLink(`https://questcastertest.vercel.app/api/${id}`);
       setLoading(false);
       setSuccess(true);
     } catch (error) {

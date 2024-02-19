@@ -2,8 +2,6 @@ import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-
   return new ImageResponse(
     (
       <div tw='p-10 px-20 flex flex-col justify-center items-center bg-black w-full h-full text-white relative'>

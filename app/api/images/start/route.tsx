@@ -6,14 +6,20 @@ export const runtime = 'edge';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const username: string = searchParams.get('username') || '';
+  const id: string = searchParams.get('id') || '';
 
   const quest = await sql`
-      SELECT * FROM Quests WHERE Username = ${username};
+      SELECT * FROM Quests WHERE id = ${id};
     `;
 
-  const { verify_follow, verify_recast, verify_tokens, token_name, image_url } =
-    quest.rows[0];
+  const {
+    verify_follow,
+    verify_recast,
+    verify_tokens,
+    token_name,
+    image_url,
+    username,
+  } = quest.rows[0];
 
   console.log(quest.rows[0]);
 

@@ -8,10 +8,10 @@ import { questCasterABI } from '@/app/constants';
 
 export async function POST(req: NextRequest): Promise<Response> {
   const { searchParams } = new URL(req.url);
-  const username: string = searchParams.get('username') || '';
+  const id: string = searchParams.get('id') || '';
 
   const quest = await sql`
-      SELECT * FROM Quests WHERE Username = ${username};
+      SELECT * FROM Quests WHERE id = ${id};
     `;
 
   const {
@@ -22,6 +22,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     image_url,
     token_address,
     contract_address,
+    username,
   } = quest.rows[0];
 
   console.log(quest.rows[0]);
@@ -188,26 +189,25 @@ export async function POST(req: NextRequest): Promise<Response> {
     }
   }
 
-  // try {
-  //   // @dev mint part here
-
-  //   const provider = new ethers.providers.JsonRpcProvider(process.env.PROVIDER);
-  //   const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
-  //   const questContract = new ethers.Contract(
-  //     contract_address,
-  //     questCasterABI,
-  //     wallet
-  //   );
-  //   const mint = await questContract.safeMint(accountAddress);
-  //   console.log(mint);
-  // } catch (error) {
-  //   return new NextResponse(`<!DOCTYPE html><html><head>
-  //         <meta property="fc:frame" content="vNext" />
-  //         <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/end`} />
-  //         <meta property="fc:frame:button:1" content='Error with Minting' />
-  //         <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify`} />
-  //       </head></html>`);
-  // }
+  try {
+    // @dev mint part here
+    const provider = new ethers.providers.JsonRpcProvider(process.env.PROVIDER);
+    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
+    const questContract = new ethers.Contract(
+      contract_address,
+      questCasterABI,
+      wallet
+    );
+    const mint = await questContract.safeMint(accountAddress);
+    console.log(mint);
+  } catch (error) {
+    return new NextResponse(`<!DOCTYPE html><html><head>
+          <meta property="fc:frame" content="vNext" />
+          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?username=${username}`} />
+          <meta property="fc:frame:button:1" content='Error with Minting' />
+          <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify`} />
+        </head></html>`);
+  }
 
   return new NextResponse(`<!DOCTYPE html><html><head>
           <meta property="fc:frame" content="vNext" />
