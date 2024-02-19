@@ -1,26 +1,32 @@
-import { Metadata } from 'next';
+import { Metadata } from "next";
+import LandingPage from "./LandingPage";
 
 const postUrl = `https://questcastertest.vercel.app/api/main`;
 
 export async function generateMetadata(): Promise<Metadata> {
   const imageUrl = `https://questcastertest.vercel.app/api/images/start?date=${Date.now()}`;
   return {
-    title: 'beyondClub | QuestCaster',
+    title: "QuestCaster",
+    icons: "/favicon.png",
     description:
-      'No-code NFT Loyalty Platform for brands, creators and communities. Starting at @ETHGlobal',
+      "No-code NFT Loyalty Platform for brands, creators and communities. Starting at @ETHGlobal",
     openGraph: {
-      title: 'beyondClub | QuestCaster',
+      title: "QuestCaster",
       images: [imageUrl],
     },
     other: {
-      'fc:frame': 'vNext',
-      'fc:frame:image': imageUrl,
-      'fc:frame:post_url': postUrl,
-      'fc:frame:button:1': 'Verify and Mint.',
+      "fc:frame": "vNext",
+      "fc:frame:image": imageUrl,
+      "fc:frame:post_url": postUrl,
+      "fc:frame:button:1": "Verify and Mint.",
     },
   };
 }
 
 export default function Home() {
-  return <div>Questcaster | beyondClub</div>;
+  return (
+    <div>
+      <LandingPage />
+    </div>
+  );
 }

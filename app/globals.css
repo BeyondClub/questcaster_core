@@ -36,3 +36,24 @@ body {
   outline: none !important;
   border: none !important;
 }
+
+
+.home::before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 50%;
+  top: 50%;
+  border-radius: 9999px;
+  transform: translate(-50%, -50%);
+  filter: blur(30px);
+  background: linear-gradient(
+    245.7deg,
+    rgba(71, 42, 143, 0.12) 16%,
+    rgba(255, 255, 255, 0.12) 50.86%,
+    rgba(71, 42, 143, 0.12) 70%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  z-index: -100;
+}
