@@ -33,12 +33,12 @@ const Form = ({ setSuccess, setLink }) => {
     const image_url = await fileUpload(file);
 
     try {
-      const questAddress = await createQuest({
-        collectibleName,
-        collectibleSymbol,
-        totalAmount,
-        maxMint,
-      });
+      // const questAddress = await createQuest({
+      //   collectibleName,
+      //   collectibleSymbol,
+      //   totalAmount,
+      //   maxMint,
+      // });
 
       const id = uuidv4();
       const response = await fetch('/api/dba', {
@@ -53,7 +53,7 @@ const Form = ({ setSuccess, setLink }) => {
           username,
           image_url,
           token_name: tokenName,
-          contract_address: questAddress,
+          contract_address: 'wdwedw',
           verify_recast: recast,
           verify_follow: follow,
           verify_tokens: token,
