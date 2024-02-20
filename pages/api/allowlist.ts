@@ -1,5 +1,5 @@
+import { prisma } from "@/app/lib/db";
 import { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "../../app/lib/db";
 
 const AllowlistHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { email } = req.body;

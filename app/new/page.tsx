@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 
+import { Toaster } from "sonner";
 import Form from "../components/Form";
 
 const page = () => {
@@ -23,6 +24,7 @@ const page = () => {
           ></motion.div>
         </div>
       </div>
+      <Toaster position="bottom-center" />
 
       <header className="grid place-items-center mb-10">
         <img

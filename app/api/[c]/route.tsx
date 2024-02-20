@@ -1,5 +1,4 @@
-import { sql } from '@vercel/postgres';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
@@ -28,7 +27,7 @@ export async function GET(
       {
         status: 200,
         headers: {
-          'Content-Type': 'text/html',
+          "Content-Type": "text/html",
         },
       }
     );

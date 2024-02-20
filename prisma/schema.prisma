@@ -1,14 +1,26 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model questcaster_allowlist {
-    allowlist_id String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-    email        String?
-    created_at   DateTime? @default(now()) @db.Timestamp(6)
+  allowlist_id String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email        String?
+  created_at   DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model questcaster_quests {
+  id               String   @id @unique(map: "questcaster_quests_id") @db.VarChar(255)
+  username         String?  @db.VarChar(255)
+  image_url        String?  @db.VarChar(255)
+  token_address    String?  @db.VarChar(255)
+  verify_follow    Boolean?
+  verify_recast    Boolean?
+  verify_tokens    Boolean?
+  contract_address String?  @db.VarChar(255)
+  token_name       String?  @db.VarChar(255)
 }
