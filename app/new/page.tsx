@@ -15,7 +15,7 @@ const page = () => {
           <motion.div
             initial={{ scale: 0.3, opacity: 0.3 }}
             animate={{ scale: 1, opacity: 1, transition: { duration: 0.75 } }}
-            className="blur-[6px] h-[100vw] w-[250vw] min-w-[1400px] min-h-[1300px] rounded-full"
+            className="blur-[6px] h-[250vw] w-[250vw] min-w-[1400px] min-h-[1300px] rounded-full"
             style={{
               background:
                 "radial-gradient(circle, rgba(255,233,255,1) 0%, rgba(255,210,255,1) 0.3%, rgba(255,194,255,1) 0.5%, rgba(255,190,255,1) 0.6%, rgba(253,180,255,1) 0.8%, rgba(253,173,255,1) 0.9%, rgba(243,168,255,1) 1.1%, rgba(234,161,244,1) 1.5%, rgba(231,158,242,1) 1.6%, rgba(229,157,240,1) 1.7%, rgba(200,145,220,1) 2%, rgba(179,126,190,1) 2.4%, rgba(152,108,153,1) 3.2%, rgba(121,87,123,1) 4.8%, rgba(112,81,119,1) 5.6%, rgba(98,74,114,1) 7%, rgba(92,70,108,1) 8%, rgba(60,49,75,1) 20%, rgba(7,5,10,1) 50%,rgba(0,0,0,0) 100%)",
