@@ -178,7 +178,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         return new NextResponse(`<!DOCTYPE html><html><head>
         <meta property="fc:frame" content="vNext" />
           <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?id=${id}`} />
-        <meta property="fc:frame:button:1" content=${`Hold ${token_name}`} />
+        <meta property="fc:frame:button:1" content=${`Not enough tokens`} />
         <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?id=${id}`} />
       </head></html>`);
       }
