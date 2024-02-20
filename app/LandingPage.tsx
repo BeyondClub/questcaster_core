@@ -50,7 +50,7 @@ export default function LandingPage() {
 
   return (
     <main className="grid place-content-center space-y-10 place-items-center text-gray-100 min-h-screen p-5">
-      <div className="absolute inset-0 overflow-hidden -z-0">
+      <div className="fixed inset-0 overflow-hidden -z-0">
         <div className="absolute -translate-x-1/2 -translate-y-1/2 top-[10%] left-[90%]">
           <motion.div
             initial={{ scale: 0.3, opacity: 0.3 }}
