@@ -96,7 +96,7 @@ const ImageUpload = (props: ImageUploadProps) => {
                 </Dropzone.Idle>
 
                 {!is_details_hidden ? (
-                  <div>
+                  <div className="mt-4">
                     <Text size="xl" inline>
                       {label}
                     </Text>

@@ -35,13 +35,29 @@ const page = () => {
 
       <div className="flex justify-center items-center">
         {!success && (
-          <div className="w-full md:w-[800px] mx-auto bg-black border border-gray-900 shadow-sm rounded-xl  p-7 px-7  z-50">
+          <div
+            className="w-full md:w-[800px] mx-auto  border border-gray-900 shadow-sm rounded-xl  p-7 px-7  z-50"
+            style={{
+              background: "rgba(255, 255, 255, 0.2)",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+              backdropFilter: "blur(5px)",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+            }}
+          >
             <h1 className="font-medium text-3xl">Create a Frame Quest</h1>
             <Form setSuccess={setSuccess} setLink={setLink} />
           </div>
         )}
         {success && (
-          <div className="max-w-xl mx-auto bg-black border border-gray-900 shadow-sm rounded-xl text-center  p-7 px-7  z-50">
+          <div
+            className="max-w-xl mx-auto  border border-gray-900 shadow-sm rounded-xl text-center  p-7 px-7  z-50"
+            style={{
+              background: "rgba(255, 255, 255, 0.2)",
+              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+              backdropFilter: "blur(5px)",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+            }}
+          >
             <h1 className="font-medium text-3xl">Here's your frame link 🎉</h1>
             <p className="mt-3">{link}</p>
           </div>
