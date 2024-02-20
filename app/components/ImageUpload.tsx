@@ -1,9 +1,9 @@
 // @ts-nocheck
-import { Button, Group, Input, Progress, Text } from '@mantine/core';
-import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import { Cross1Icon, ImageIcon, UploadIcon } from '@radix-ui/react-icons';
-import { useEffect, useState } from 'react';
-import { toast } from 'react-hot-toast';
+import { Button, Group, Input, Progress, Text } from "@mantine/core";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { Cross1Icon, ImageIcon, UploadIcon } from "@radix-ui/react-icons";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 
 interface ImageUploadProps {
   label: string;
@@ -34,23 +34,23 @@ const ImageUpload = (props: ImageUploadProps) => {
   }, [selectedFile]);
 
   return (
-    <div>
+    <div className="border-2 border-dashed rounded p-5">
       {props.selected_file ? (
         <div>
-          <Input.Wrapper label={label}>
+          <Input.Wrapper>
             <img
-              className='w-full h-full mt-2 rounded-md'
+              className="w-full h-full mt-2 rounded-md"
               src={`${URL.createObjectURL(props.selected_file)}`}
-              alt=''
+              alt=""
             />
 
             <Button
               compact
-              className='mt-3 mb-1'
-              variant='subtle'
+              className="mt-3 mb-1"
+              variant="subtle"
               onClick={() => {
                 setLoading(0);
-                onSelectFile('');
+                onSelectFile("");
               }}
             >
               Change Image
@@ -59,55 +59,55 @@ const ImageUpload = (props: ImageUploadProps) => {
         </div>
       ) : (
         <>
-          <Input.Wrapper label={label}>
+          <Input.Wrapper>
             <Dropzone
-              className='mt-2'
+              className="mt-2"
               onDrop={(files: any) => changeHandler(files)}
               onReject={(files: any) => {
-                toast.error('File not supported or too large (max 10MB)');
+                toast.error("File not supported or too large (max 10MB)");
               }}
               maxSize={20 * 1024 ** 2}
               accept={
                 multimedia
                   ? [
-                      'image/png',
-                      'image/jpeg',
-                      'image/sgv+xml',
-                      'image/gif',
-                      'video/mp4',
+                      "image/png",
+                      "image/jpeg",
+                      "image/sgv+xml",
+                      "image/gif",
+                      "video/mp4",
                     ]
                   : IMAGE_MIME_TYPE
               }
               {...restProps}
             >
               <Group
-                position='center'
-                spacing='xl'
-                style={{ minHeight: 120, pointerEvents: 'none' }}
+                position="center"
+                spacing="xl"
+                style={{ minHeight: 120, pointerEvents: "none" }}
               >
                 <Dropzone.Accept>
-                  <UploadIcon className='w-8 h-8' />
+                  <UploadIcon className="w-8 h-8" />
                 </Dropzone.Accept>
                 <Dropzone.Reject>
-                  <Cross1Icon className='w-8 h-8' />
+                  <Cross1Icon className="w-8 h-8" />
                 </Dropzone.Reject>
                 <Dropzone.Idle>
-                  <ImageIcon className='w-8 h-8' />
+                  <ImageIcon className="w-8 h-8" />
                 </Dropzone.Idle>
 
                 {!is_details_hidden ? (
                   <div>
-                    <Text size='xl' inline>
+                    <Text size="xl" inline>
                       {label}
                     </Text>
-                    <Text size='sm' color='dimmed' inline mt={7}>
+                    <Text size="sm" color="dimmed" inline mt={7}>
                       Drag images here or click to select files
                     </Text>
                   </div>
                 ) : null}
               </Group>
               {loading !== 0 ? (
-                <Progress value={loading} striped animate color={'gray'} />
+                <Progress value={loading} striped animate color={"gray"} />
               ) : null}
             </Dropzone>
           </Input.Wrapper>
