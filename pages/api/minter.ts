@@ -1,12 +1,16 @@
-import { createQuest } from '@/app/lib/contract';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { ethers } from 'ethers';
-import { questCasterABI } from '@/app/constants';
+import { questCasterABI } from "@/app/constants";
+import { ethers } from "ethers";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function Handler(
   request: NextApiRequest,
   res: NextApiResponse
 ) {
+  const secretKey = request.headers["key"];
+  if (secretKey !== process.env.MINT_NFT_SECRET_KEY) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   const { accountAddress, contract_address } = request.body;
 
   try {
@@ -22,5 +26,5 @@ export default async function Handler(
   } catch (error) {
     return res.status(500).json({ error });
   }
-  return res.status(200).json({ quests: 'Minted Successfully' });
+  return res.status(200).json({ quests: "Minted Successfully" });
 }
