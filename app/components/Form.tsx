@@ -1,6 +1,5 @@
 //@ts-nocheck
 "use client";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { DOMAIN } from "../config";
@@ -441,9 +440,9 @@ const Form = ({ setSuccess, setLink }) => {
           </label> */}
         </div>
 
-        <div className="my-3">
+        {/* <div className="my-3">
           <ConnectButton />
-        </div>
+        </div> */}
 
         <button className="btn rounded-full bg-purple-700 mt-5">
           {loading && <span className="loading loading-spinner"></span>}
