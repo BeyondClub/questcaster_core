@@ -1,27 +1,28 @@
+import { getFrameMetadata } from "@coinbase/onchainkit";
 import { Metadata } from "next";
 import LandingPage from "./LandingPage";
+import { DOMAIN } from "./config";
 
-const postUrl = `https://questcastertest.vercel.app/api/main`;
+const frameMetadata = getFrameMetadata({
+  buttons: ["Verify and Mint NFT"],
+  image: `${DOMAIN}/images/campaign/home.png`,
+  post_url: `${DOMAIN}/api/frame`,
+});
 
-export async function generateMetadata(): Promise<Metadata> {
-  const imageUrl = `https://questcastertest.vercel.app/api/images/start?date=${Date.now()}`;
-  return {
-    title: "QuestCaster",
-    icons: "/favicon.png",
-    description:
-      "No-code NFT Loyalty Platform for brands, creators and communities. Starting at @ETHGlobal",
-    openGraph: {
-      title: "QuestCaster",
-      images: [imageUrl],
-    },
-    other: {
-      "fc:frame": "vNext",
-      "fc:frame:image": imageUrl,
-      "fc:frame:post_url": postUrl,
-      "fc:frame:button:1": "Verify and Mint.",
-    },
-  };
-}
+export const metadata: Metadata = {
+  metadataBase: new URL(`${DOMAIN}`),
+  title: "Questcaster Signature NFT",
+  description: "The Easiest way to boost Community Engagement with Frames",
+  icons: "favicon.png",
+  openGraph: {
+    title: "Questcaster",
+    description: "The Easiest way to boost Community Engagement with Frames",
+    images: [`${DOMAIN}/images/campaign/home.png`],
+  },
+  other: {
+    ...frameMetadata,
+  },
+};
 
 export default function Home() {
   return (
