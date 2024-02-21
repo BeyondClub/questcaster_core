@@ -33,6 +33,7 @@ export async function POST(request: Request) {
         image_url,
         verify_follow,
         verify_recast,
+        token_address,
         verify_tokens,
         contract_address,
         token_name,
