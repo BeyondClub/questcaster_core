@@ -3,6 +3,7 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { DOMAIN } from "../config";
 import ImageUpload from "./ImageUpload";
 import SectionHeading from "./SectionHeading";
 
@@ -61,7 +62,7 @@ const Form = ({ setSuccess, setLink }) => {
 
       const data = await response.json();
 
-      setLink(`https://questcastertest.vercel.app/api/${id}`);
+      setLink(`${DOMAIN}/api/${id}`);
       setLoading(false);
       setSuccess(true);
     } catch (error) {

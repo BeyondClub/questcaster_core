@@ -1,3 +1,4 @@
+import { DOMAIN } from "@/app/config";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -7,8 +8,8 @@ export async function GET(
   let info = null;
 
   try {
-    const postUrl = `https://questcastertest.vercel.app/api/verify?id=${params.c}`;
-    const imageUrl = `https://questcastertest.vercel.app/api/images/start?id=${params.c}`;
+    const postUrl = `${DOMAIN}/api/verify?id=${params.c}`;
+    const imageUrl = `${DOMAIN}/api/images/start?id=${params.c}`;
 
     return new NextResponse(
       `<!DOCTYPE html>

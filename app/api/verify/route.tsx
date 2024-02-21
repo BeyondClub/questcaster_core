@@ -2,6 +2,7 @@ import { fetchQuery, init } from "@airstack/node";
 import { NextRequest, NextResponse } from "next/server";
 // import { WalletService } from '@unlock-protocol/unlock-js';
 // import { chainConfig, lockAddress, unlockABI } from '@/app/config';
+import { DOMAIN } from "@/app/config";
 import { questCasterABI } from "@/app/constants";
 import { prisma } from "@/app/lib/db";
 import { ethers } from "ethers";
@@ -37,9 +38,9 @@ export async function POST(req: NextRequest): Promise<Response> {
   if (username == "" || username == undefined) {
     return new NextResponse(`<!DOCTYPE html><html><head>
         <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?id=${id}`} />
+          <meta property="fc:frame:image" content=${`${DOMAIN}/api/images/start?id=${id}`} />
         <meta property="fc:frame:button:1" content=${`Username Invalid`} />
-        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?id=${id}`} />
+        <meta property="fc:frame:post_url" content=${`${DOMAIN}/api/verify?id=${id}`} />
       </head></html>`);
   }
 
@@ -93,18 +94,18 @@ export async function POST(req: NextRequest): Promise<Response> {
   if (accountAddress == null) {
     return new NextResponse(`<!DOCTYPE html><html><head>
           <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?id=${id}`} />
+          <meta property="fc:frame:image" content=${`${DOMAIN}/api/images/start?id=${id}`} />
           <meta property="fc:frame:button:1" content='Add Wallet to Farcaster' />
-        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?id=${id}`} />
+        <meta property="fc:frame:post_url" content=${`${DOMAIN}/api/verify?id=${id}`} />
         </head></html>`);
   }
 
   if (verify_recast === true && recasted === false) {
     return new NextResponse(`<!DOCTYPE html><html><head>
           <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?id=${id}`} />
+          <meta property="fc:frame:image" content=${`${DOMAIN}/api/images/start?id=${id}`} />
           <meta property="fc:frame:button:1" content='Recast Post' />
-        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?id=${id}`} />
+        <meta property="fc:frame:post_url" content=${`${DOMAIN}/api/verify?id=${id}`} />
         </head></html>`);
   }
 
@@ -135,9 +136,9 @@ export async function POST(req: NextRequest): Promise<Response> {
     if (data.Wallet.socialFollowings.Following == null) {
       return new NextResponse(`<!DOCTYPE html><html><head>
         <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?id=${id}`} />
+          <meta property="fc:frame:image" content=${`${DOMAIN}/api/images/start?id=${id}`} />
         <meta property="fc:frame:button:1" content=${`Follow ${username}`} />
-        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?id=${id}`} />
+        <meta property="fc:frame:post_url" content=${`${DOMAIN}/api/verify?id=${id}`} />
       </head></html>`);
     }
     console.log("verified follow");
@@ -183,9 +184,9 @@ export async function POST(req: NextRequest): Promise<Response> {
       if (!exists) {
         return new NextResponse(`<!DOCTYPE html><html><head>
         <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?id=${id}`} />
+          <meta property="fc:frame:image" content=${`${DOMAIN}/api/images/start?id=${id}`} />
         <meta property="fc:frame:button:1" content=${`Not enough tokens`} />
-        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?id=${id}`} />
+        <meta property="fc:frame:post_url" content=${`${DOMAIN}/api/verify?id=${id}`} />
       </head></html>`);
       }
       console.log("verified tokens");
@@ -208,17 +209,17 @@ export async function POST(req: NextRequest): Promise<Response> {
   } catch (error) {
     return new NextResponse(`<!DOCTYPE html><html><head>
           <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/start?id=${id}`} />
+          <meta property="fc:frame:image" content=${`${DOMAIN}/api/images/start?id=${id}`} />
           <meta property="fc:frame:button:1" content='Error with Minting' />
-          <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?id=${id}`} />
+          <meta property="fc:frame:post_url" content=${`${DOMAIN}/api/verify?id=${id}`} />
         </head></html>`);
   }
 
   return new NextResponse(`<!DOCTYPE html><html><head>
           <meta property="fc:frame" content="vNext" />
-          <meta property="fc:frame:image" content=${`https://questcastertest.vercel.app/api/images/end`} />
+          <meta property="fc:frame:image" content=${`${DOMAIN}/api/images/end`} />
           <meta property="fc:frame:button:1" content='NFT Minted Successfully' />
-        <meta property="fc:frame:post_url" content=${`https://questcastertest.vercel.app/api/verify?id=${id}`} />
+        <meta property="fc:frame:post_url" content=${`${DOMAIN}/api/verify?id=${id}`} />
         </head></html>`);
 }
 
