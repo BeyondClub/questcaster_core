@@ -1,9 +1,9 @@
-import { ethers } from "ethers";
+import { ethers } from 'ethers';
 import {
   questCasterABI,
   questFactoryABI,
   questFactoryAddress,
-} from "../constants";
+} from '../constants';
 
 export const createQuest = async ({
   questName,
@@ -23,6 +23,9 @@ export const createQuest = async ({
     questFactoryABI,
     wallet
   );
+
+  console.log(provider, wallet);
+
   const newQuest = await factoryContract.deployQuest(
     wallet.address,
     questName,
@@ -41,8 +44,8 @@ export const createQuest = async ({
     wallet
   );
   // @dev pass in base uri here
-  const _setURI = await questContract.setURI("");
+  const _setURI = await questContract.setURI('');
 
-  console.log("Quest successfully created at address: " + questAddress);
+  console.log('Quest successfully created at address: ' + questAddress);
   return questAddress;
 };

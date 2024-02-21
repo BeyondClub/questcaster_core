@@ -1,21 +1,21 @@
-import { createQuest } from "@/app/lib/contract";
-import { prisma } from "@/app/lib/db";
-import { NextResponse } from "next/server";
+import { createQuest } from '@/app/lib/contract';
+import { prisma } from '@/app/lib/db';
+import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   const {
     id,
     username,
     image_url,
-    token_address,
-    verify_follow,
+    token_name,
     verify_recast,
+    verify_follow,
     verify_tokens,
+    token_address,
     collectibleName,
     collectibleSymbol,
     totalAmount,
     maxMint,
-    token_name,
   } = await request.json();
 
   const contract_address = await createQuest({
@@ -31,7 +31,6 @@ export async function POST(request: Request) {
         id,
         username,
         image_url,
-        token_address,
         verify_follow,
         verify_recast,
         verify_tokens,
@@ -40,7 +39,8 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
+    console.log('Prisma error');
     return NextResponse.json({ error }, { status: 500 });
   }
-  return NextResponse.json({ quests: "Added Successfully" }, { status: 200 });
+  return NextResponse.json({ quests: 'Added Successfully' }, { status: 200 });
 }
