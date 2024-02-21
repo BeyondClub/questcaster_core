@@ -1,26 +1,23 @@
 import { DOMAIN } from "@/app/config";
+import { prisma } from "@/app/lib/db";
 import { ImageResponse } from "@vercel/og";
 import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const id: string = searchParams.get("id") || "";
-  let quest = null;
 
-  try {
-    const response = await fetch(`${DOMAIN}/api/get_campaign?id=${id}`, {
-      method: "GET",
-      credentials: "include",
-      headers: { Cookie: `` },
-    });
-    quest = await response.json();
-  } catch (e) {
-    console.log(e);
+  if (!id) {
+    return NextResponse.json({ error: "id is required" }, { status: 500 });
   }
 
-  console.log(quest);
+  const quest = await prisma.questcaster_quests.findFirst({
+    where: {
+      id,
+    },
+  });
 
   if (!quest) {
     return NextResponse.json({ error: "Quest not found" }, { status: 404 });
@@ -66,6 +63,7 @@ export async function GET(request: NextRequest) {
     {
       width: 1200,
       height: 630,
+      debug: true,
     }
   );
 }
