@@ -1,22 +1,25 @@
-import { createQuest } from '@/app/lib/contract';
-import { prisma } from '@/app/lib/db';
-import { NextResponse } from 'next/server';
+import { createQuest } from "@/app/lib/contract";
+import { prisma } from "@/app/lib/db";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export async function POST(request: Request) {
+export default async function Handler(
+  request: NextApiRequest,
+  res: NextApiResponse
+) {
   const {
     id,
     username,
     image_url,
-    token_name,
-    verify_recast,
-    verify_follow,
-    verify_tokens,
     token_address,
+    verify_follow,
+    verify_recast,
+    verify_tokens,
     collectibleName,
     collectibleSymbol,
     totalAmount,
     maxMint,
-  } = await request.json();
+    token_name,
+  } = request.body;
 
   const contract_address = await createQuest({
     questName: collectibleName,
@@ -31,17 +34,16 @@ export async function POST(request: Request) {
         id,
         username,
         image_url,
+        token_address,
         verify_follow,
         verify_recast,
-        token_address,
         verify_tokens,
         contract_address,
         token_name,
       },
     });
   } catch (error) {
-    console.log('Prisma error');
-    return NextResponse.json({ error }, { status: 500 });
+    return res.status(500).json({ error });
   }
-  return NextResponse.json({ quests: 'Added Successfully' }, { status: 200 });
+  return res.status(200).json({ quests: "Added Successfully" });
 }
