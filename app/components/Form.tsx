@@ -1,5 +1,6 @@
 //@ts-nocheck
 "use client";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import ImageUpload from "./ImageUpload";
@@ -11,8 +12,8 @@ const Form = ({ setSuccess, setLink }) => {
   const [tokenAddress, setTokenAddress] = useState("");
   const [collectibleName, setCollectibleName] = useState("");
   const [collectibleSymbol, setCollectibleSymbol] = useState("");
-  const [maxMint, setMaxMint] = useState(0);
-  const [totalAmount, setTotalAmount] = useState(0);
+  const [maxMint, setMaxMint] = useState(1);
+  const [totalAmount, setTotalAmount] = useState(100);
   const [file, setFile] = useState(null);
   const [follow, setFollow] = useState(false);
   const [recast, setRecast] = useState(false);
@@ -20,18 +21,15 @@ const Form = ({ setSuccess, setLink }) => {
   const [loading, setLoading] = useState(false);
 
   async function addDataToVercelDB(e: { preventDefault: () => void }) {
-    console.log("ADD");
     e.preventDefault();
 
-    // if (file == null) {
-    //   toast.error("Please upload an image");
-    //   return;
-    // }
+    if (file == null) {
+      toast.error("Please upload an image");
+      return;
+    }
     setLoading(true);
 
-    //get image url
-    // const image_url = await fileUpload(file);
-    const image_url = "https://";
+    const image_url = await fileUpload(file);
 
     try {
       const id = uuidv4();
@@ -62,7 +60,7 @@ const Form = ({ setSuccess, setLink }) => {
       }
 
       const data = await response.json();
-      console.log("Quest added successfully:", data);
+
       setLink(`https://questcastertest.vercel.app/api/${id}`);
       setLoading(false);
       setSuccess(true);
@@ -92,20 +90,12 @@ const Form = ({ setSuccess, setLink }) => {
           }),
         });
 
-        console.log("getSignedData");
-
         const getSignedDataResponse = await getSignedData.json();
-        console.log(getSignedDataResponse);
         const signedUrl = getSignedDataResponse?.url;
 
         const renamedFile = new File([file], newName, {
           type: file.type,
         });
-
-        console.log(file);
-        console.log(signedUrl);
-        console.log("put file");
-        console.log(signedUrl);
 
         const response = await fetch(signedUrl, {
           method: "PUT",
@@ -116,12 +106,9 @@ const Form = ({ setSuccess, setLink }) => {
           body: renamedFile,
         });
 
-        console.log(response);
-
         const filePath =
           process.env.NEXT_PUBLIC_BUCKET_URL + `questcaster_image/${newName}`;
 
-        console.log(filePath);
         return filePath;
       } catch (error) {
         console.log(error);
@@ -220,7 +207,6 @@ const Form = ({ setSuccess, setLink }) => {
           title="1. Select Quests"
           description="Select a set of quests you would like your followers to do."
         />
-
         <div>
           <h2 className="font-semibold text-l mb-0 leading-2 text-white not-italic">
             Selected Quests
@@ -230,7 +216,6 @@ const Form = ({ setSuccess, setLink }) => {
             Edit the quests as required.
           </span>
         </div>
-
         <div className="mt-3">
           {follow && (
             <div className="w-full p-3 bg-black border rounded-md border-gray-400 px-4 flex justify-between items-center mt-2">
@@ -316,7 +301,6 @@ const Form = ({ setSuccess, setLink }) => {
             </>
           )}
         </div>
-
         <div className="grid grid-rows-2 grid-cols-3 mt-5">
           <div
             className="rounded-xl cursor-pointer m-1 p-4 px-5 bg-purple-100 text-black font-bold text-sm flex items-center"
@@ -335,26 +319,33 @@ const Form = ({ setSuccess, setLink }) => {
             Recast on Farcaster
           </div>
           <div
-            className="rounded-xl cursor-pointer m-1 p-4 px-5 bg-yellow-100 text-black font-bold text-sm"
+            className=" rounded-xl cursor-pointer m-1 p-4 px-5 bg-yellow-100 text-black font-bold text-sm"
             onClick={() => document.getElementById("token_modal").showModal()}
           >
             💰 Token Holders
           </div>
-          <div className="rounded-xl cursor-not-allowed m-1 p-4 px-5 bg-orange-100 text-black font-bold text-sm flex items-center">
+          <div className="relative rounded-xl cursor-not-allowed m-1 p-4 px-5 bg-orange-100 text-black font-bold text-sm flex items-center">
             <img src="/images/poap.png" className="w-6 mr-2" />
             POAP Holders
+            <span className="absolute text-xs text-gray-400 bottom-1 right-2">
+              coming soon
+            </span>
           </div>
-          <div className="rounded-xl cursor-not-allowed m-1 p-4 px-5 bg-green-100 text-black font-bold text-sm flex items-center">
+          <div className="relative rounded-xl cursor-not-allowed m-1 p-4 px-5 bg-green-100 text-black font-bold text-sm flex items-center">
             <img src="/images/nft.png" className="w-6 mr-2" />
             Existing NFT Holders
+            <span className="absolute text-xs text-gray-400 bottom-1 right-2">
+              coming soon
+            </span>
           </div>
-          <div className="rounded-xl m-1 p-4 px-5 bg-zinc-200 text-black font-bold text-sm cursor-not-allowed">
-            ⛓️ Onchain Engagement
+          <div className="rounded-xl m-1 p-4 px-5 bg-zinc-200 text-black font-bold text-sm cursor-not-allowed relative">
+            ⛓️ Onchain Engagement{" "}
+            <span className="absolute text-xs text-gray-400 bottom-1 right-2">
+              coming soon
+            </span>
           </div>
         </div>
-
         <SectionHeading title="2. NFT Detail" description="" />
-
         <div className="flex flex-col">
           <div className="max-w-xs mb-2">
             <ImageUpload
@@ -420,7 +411,7 @@ const Form = ({ setSuccess, setLink }) => {
               onChange={(e: any) => setMaxMint(Number(e.target.value))}
             />
           </label>
-          <label className="form-control w-full  mt-3">
+          {/* <label className="form-control w-full  mt-3">
             <div className="label">
               <span className="label-text text-white">Network</span>
             </div>
@@ -446,8 +437,13 @@ const Form = ({ setSuccess, setLink }) => {
                 </li>
               </ul>
             </div>
-          </label>
+          </label> */}
         </div>
+
+        <div className="my-3">
+          <ConnectButton />
+        </div>
+
         <button className="btn rounded-full bg-purple-700 mt-5">
           {loading && <span className="loading loading-spinner"></span>}
           {!loading && "Generate Link"}
