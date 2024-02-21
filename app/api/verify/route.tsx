@@ -197,7 +197,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   try {
     // @dev mint part here
 
-    const response = await fetch("/api/minter", {
+    const response = await fetch(`${DOMAIN}/api/minter`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
