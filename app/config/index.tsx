@@ -1,4 +1,4 @@
-export const DOMAIN = "https://www.questcaster.xyz";
+export const DOMAIN = "https://questcaster-core.vercel.app";
 
 export const chainConfig = {
   8453: {
