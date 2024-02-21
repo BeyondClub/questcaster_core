@@ -34,7 +34,7 @@ const Form = ({ setSuccess, setLink }) => {
 
     try {
       const id = uuidv4();
-      const response = await fetch('/api/dba_', {
+      const response = await fetch('/api/dba', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
