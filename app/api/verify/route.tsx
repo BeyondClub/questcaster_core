@@ -209,13 +209,13 @@ export async function POST(req: NextRequest): Promise<Response> {
         accountAddress,
         contract_address,
       }),
-      hea,
     });
 
     if (!response.ok) {
       throw new Error("Failed to Mint");
     }
   } catch (error) {
+    console.log(error);
     return new NextResponse(`<!DOCTYPE html><html><head>
           <meta property="fc:frame" content="vNext" />
           <meta property="fc:frame:image" content=${`${DOMAIN}/api/images/start?id=${id}`} />
