@@ -1,15 +1,14 @@
-import { fetchQuery, init } from "@airstack/node";
-import { NextRequest, NextResponse } from "next/server";
+//@ts-nocheck
+import { fetchQuery, init } from '@airstack/node';
+import { NextRequest, NextResponse } from 'next/server';
 // import { WalletService } from '@unlock-protocol/unlock-js';
 // import { chainConfig, lockAddress, unlockABI } from '@/app/config';
-import { DOMAIN } from "@/app/config";
-import { questCasterABI } from "@/app/constants";
-import { prisma } from "@/app/lib/db";
-import { ethers } from "ethers";
+import { DOMAIN } from '@/app/config';
+import { prisma } from '@/app/lib/db';
 
 export async function POST(req: NextRequest): Promise<Response> {
   const { searchParams } = new URL(req.url);
-  const id: string = searchParams.get("id") || "";
+  const id: string = searchParams.get('id') || '';
 
   const quest = await prisma.questcaster_quests.findFirst({
     where: {
@@ -18,7 +17,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   });
 
   if (!quest) {
-    return NextResponse.json({ error: "Quest not found" }, { status: 404 });
+    return NextResponse.json({ error: 'Quest not found' }, { status: 404 });
   }
 
   const {
@@ -33,9 +32,9 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   console.log(quest);
 
-  init("116adcc049997451b948dad4e53d94f98");
+  init('116adcc049997451b948dad4e53d94f98');
 
-  if (username == "" || username == undefined) {
+  if (username == '' || username == undefined) {
     return new NextResponse(`<!DOCTYPE html><html><head>
         <meta property="fc:frame" content="vNext" />
           <meta property="fc:frame:image" content=${`${DOMAIN}/api/images/start?id=${id}`} />
@@ -61,11 +60,11 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   try {
     const options = {
-      method: "POST",
+      method: 'POST',
       headers: {
-        accept: "application/json",
-        api_key: "NEYNAR_API_DOCS",
-        "content-type": "application/json",
+        accept: 'application/json',
+        api_key: 'NEYNAR_API_DOCS',
+        'content-type': 'application/json',
       },
       body: JSON.stringify({
         cast_reaction_context: true,
@@ -75,7 +74,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     };
 
     const response = await fetch(
-      "https://api.neynar.com/v2/farcaster/frame/validate",
+      'https://api.neynar.com/v2/farcaster/frame/validate',
       options
     );
     const body = await response.json();
@@ -88,7 +87,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     console.log(recasted);
     console.log(accountAddress);
   } catch (error) {
-    console.error("Error:", error);
+    console.error('Error:', error);
   }
 
   if (accountAddress == null) {
@@ -141,7 +140,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         <meta property="fc:frame:post_url" content=${`${DOMAIN}/api/verify?id=${id}`} />
       </head></html>`);
     }
-    console.log("verified follow");
+    console.log('verified follow');
   }
 
   if (verify_tokens === true && token_address !== null) {
@@ -189,7 +188,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         <meta property="fc:frame:post_url" content=${`${DOMAIN}/api/verify?id=${id}`} />
       </head></html>`);
       }
-      console.log("verified tokens");
+      console.log('verified tokens');
     } catch (error) {
       console.log(error);
     }
@@ -197,15 +196,23 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   try {
     // @dev mint part here
-    const provider = new ethers.providers.JsonRpcProvider(process.env.PROVIDER);
-    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
-    const questContract = new ethers.Contract(
-      contract_address!,
-      questCasterABI,
-      wallet
-    );
-    const mint = await questContract.safeMint(accountAddress);
-    console.log(mint);
+
+    const response = await fetch('/api/minter', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: JSON.stringify({
+        accountAddress,
+        contract_address,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to Mint');
+    }
   } catch (error) {
     return new NextResponse(`<!DOCTYPE html><html><head>
           <meta property="fc:frame" content="vNext" />
@@ -223,4 +230,4 @@ export async function POST(req: NextRequest): Promise<Response> {
         </head></html>`);
 }
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
