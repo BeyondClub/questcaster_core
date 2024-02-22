@@ -1,5 +1,5 @@
-# QuestCaster
-The easiest no-code tool for quests and rewarding NFTs on Frames
+# QuestCaster - The easiest no-code tool for quests and rewarding NFTs on Frames
+
 <img width="1509" alt="Screenshot 2024-02-22 at 17 51 46" src="https://github.com/BeyondClub/questcaster_core/assets/90386676/be174333-82c1-460c-8092-475308086783">
 
 ## Why QuestCaster increase engagement? - Low Friction
