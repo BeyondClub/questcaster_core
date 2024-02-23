@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import '@rainbow-me/rainbowkit/styles.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { WagmiProvider } from 'wagmi';
-import { base, zora } from 'wagmi/chains';
+import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import "@rainbow-me/rainbowkit/styles.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { WagmiProvider } from "wagmi";
+import { base } from "wagmi/chains";
 
 const config = getDefaultConfig({
-  appName: 'QuestCaster',
+  appName: "QuestCaster",
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
-  chains: [base, zora],
+  chains: [base],
   ssr: false,
 });
 
