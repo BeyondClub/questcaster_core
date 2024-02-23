@@ -206,6 +206,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         key: process.env.MINT_NFT_SECRET_KEY,
       },
       body: JSON.stringify({
+        messageBytes,
         accountAddress,
         contract_address,
       }),

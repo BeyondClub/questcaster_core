@@ -1,21 +1,8 @@
-// currently only on Base Sepolia
+// currently only on Base 
 
-export const questFactoryAddress = "0x74AAE716D87b5B9BEb2D7759D5716640845Ac974"
+export const questFactoryAddress = "0x363049d1aDBbE891e63eCd21834647F6FaE870e0"
 
 export const questFactoryABI = [
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "_address",
-				"type": "address"
-			}
-		],
-		"name": "questCasterDeployed",
-		"type": "event"
-	},
 	{
 		"inputs": [
 			{
@@ -34,6 +21,11 @@ export const questFactoryABI = [
 				"type": "string"
 			},
 			{
+				"internalType": "string",
+				"name": "uri",
+				"type": "string"
+			},
+			{
 				"internalType": "uint256",
 				"name": "_maxSupply",
 				"type": "uint256"
@@ -42,6 +34,11 @@ export const questFactoryABI = [
 				"internalType": "uint256",
 				"name": "_mintLimit",
 				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "syndicateMinter",
+				"type": "address"
 			}
 		],
 		"name": "deployQuest",
@@ -54,6 +51,19 @@ export const questFactoryABI = [
 		],
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "_address",
+				"type": "address"
+			}
+		],
+		"name": "questCasterDeployed",
+		"type": "event"
 	}
 ]
 
@@ -81,6 +91,11 @@ export const questCasterABI = [
 				"type": "string"
 			},
 			{
+				"internalType": "string",
+				"name": "uri",
+				"type": "string"
+			},
+			{
 				"internalType": "uint256",
 				"name": "_maxSupply",
 				"type": "uint256"
@@ -89,6 +104,11 @@ export const questCasterABI = [
 				"internalType": "uint256",
 				"name": "_mintLimit",
 				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "syndicateMinter",
+				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",

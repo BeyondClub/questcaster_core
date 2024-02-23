@@ -1,50 +1,52 @@
 import { ethers } from 'ethers';
 import {
-  questCasterABI,
   questFactoryABI,
   questFactoryAddress,
 } from '../constants';
 
 export const createQuest = async ({
-  questName,
-  symbol,
-  maxSupply,
-  mintLimit,
+  address,
+  collectibleName,
+  collectibleSymbol,
+  uri,
+  totalAmount,
+  maxMint,
+  // syndicateWallet
 }: {
-  questName: string;
-  symbol: string;
-  maxSupply: Number;
-  mintLimit: Number;
+  address: string;
+  collectibleName: string;
+  collectibleSymbol: string;
+  uri: string;
+  totalAmount: Number;
+  maxMint: Number;
+  // syndicateWallet: string;
 }) => {
+  console.log(address, collectibleName, collectibleSymbol, uri, totalAmount, maxMint, process.env.SYNDICATE_API_WALLET)
   const provider = new ethers.providers.JsonRpcProvider(process.env.PROVIDER);
-  const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
+  const signer = await provider.getSigner();
   const factoryContract = new ethers.Contract(
     questFactoryAddress,
     questFactoryABI,
-    wallet
+    signer
   );
 
-  console.log(provider, wallet);
+  console.log(provider, signer);
 
   const newQuest = await factoryContract.deployQuest(
-    wallet.address,
-    questName,
-    symbol,
-    maxSupply,
-    mintLimit
+    address,
+    collectibleName,
+    collectibleSymbol,
+    uri,
+    totalAmount,
+    maxMint,
+    // process.env.SYNDICATE_API_WALLET
+    "0xbdde681915a99318d822b1f5d29226b9c0073774"
   );
 
   const receipt = await newQuest.wait();
 
   console.log(receipt);
   const questAddress = receipt.logs[0].address;
-  const questContract = new ethers.Contract(
-    questAddress,
-    questCasterABI,
-    wallet
-  );
-  // @dev pass in base uri here
-  const _setURI = await questContract.setURI('');
 
   console.log('Quest successfully created at address: ' + questAddress);
   return questAddress;

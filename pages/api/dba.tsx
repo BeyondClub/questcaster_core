@@ -19,14 +19,15 @@ export default async function Handler(
     totalAmount,
     maxMint,
     token_name,
+    contract_address
   } = request.body;
 
-  const contract_address = await createQuest({
-    questName: collectibleName,
-    symbol: collectibleSymbol,
-    maxSupply: totalAmount,
-    mintLimit: maxMint,
-  });
+  // const contract_address = await createQuest({
+  //   questName: collectibleName,
+  //   symbol: collectibleSymbol,
+  //   maxSupply: totalAmount,
+  //   mintLimit: maxMint,
+  // });
 
   try {
     await prisma.questcaster_quests.create({

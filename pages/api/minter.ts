@@ -11,17 +11,24 @@ export default async function Handler(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const { accountAddress, contract_address } = request.body;
+  const { messageBytes, accountAddress, contract_address } = request.body;
 
   try {
-    const provider = new ethers.providers.JsonRpcProvider(process.env.PROVIDER);
-    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
-    const questContract = new ethers.Contract(
-      contract_address!,
-      questCasterABI,
-      wallet
-    );
-    const mint = await questContract.safeMint(accountAddress);
+    const mint = await fetch('https://frame.syndicate.io/api/v2/sendTransaction', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.SYNDICATE_API_KEY}` 
+      },
+      body: JSON.stringify({
+        frameTrustedData: messageBytes,
+        contractAddress: contract_address,
+        functionSignature: "safeMint(address to)",
+        args: { to: accountAddress },
+        chainId: 8453
+  
+      })
+    })
     console.log(mint);
   } catch (error) {
     return res.status(500).json({ error });

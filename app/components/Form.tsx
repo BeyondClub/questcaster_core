@@ -6,6 +6,12 @@ import { DOMAIN } from '../config';
 import ImageUpload from './ImageUpload';
 import SectionHeading from './SectionHeading';
 import { toast } from 'sonner';
+import { createQuest } from '../lib/contract';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useAccount } from 'wagmi';
+import { questFactoryABI, questFactoryAddress } from '../constants';
+import { ethers } from 'ethers';
+require('dotenv').config()
 
 const Form = ({ setSuccess, setLink }) => {
   const [username, setUsername] = useState('');
@@ -21,9 +27,11 @@ const Form = ({ setSuccess, setLink }) => {
   const [token, setToken] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const { address } = useAccount();
+
   async function addDataToVercelDB(e: { preventDefault: () => void }) {
     e.preventDefault();
-
+    console.log("here0")
     if (file == null) {
       toast.error('Please upload an image');
       return;
@@ -33,6 +41,36 @@ const Form = ({ setSuccess, setLink }) => {
     const image_url = await fileUpload(file);
 
     try {
+
+      const provider = new ethers.providers.Web3Provider((window as any).ethereum);
+      const signer = await provider.getSigner();
+      const factoryContract = new ethers.Contract(
+        questFactoryAddress,
+        questFactoryABI,
+        signer
+      );
+
+      console.log(provider, signer);
+      const uri = ""
+
+      const newQuest = await factoryContract.deployQuest(
+        address,
+        collectibleName,
+        collectibleSymbol,
+        uri,
+        totalAmount,
+        maxMint,
+        // process.env.SYNDICATE_API_WALLET
+        "0xbdde681915a99318d822b1f5d29226b9c0073774"
+      );
+
+      const receipt = await newQuest.wait();
+
+      console.log(receipt);
+      const contract_address = receipt.logs[0].address;
+
+      console.log("here2")
+
       const id = uuidv4();
       const response = await fetch('/api/dba', {
         method: 'POST',
@@ -54,6 +92,7 @@ const Form = ({ setSuccess, setLink }) => {
           collectibleSymbol,
           totalAmount,
           maxMint,
+          contract_address
         }),
       });
 
@@ -108,7 +147,7 @@ const Form = ({ setSuccess, setLink }) => {
 
         const filePath =
           process.env.NEXT_PUBLIC_BUCKET_URL + `questcaster_image/${newName}`;
-
+        console.log(filePath)
         return filePath;
       } catch (error) {
         console.log("Can't upload to aws");
@@ -441,9 +480,9 @@ const Form = ({ setSuccess, setLink }) => {
           </label> */}
         </div>
 
-        {/* <div className="my-3">
+        <div className="mt-5">
           <ConnectButton />
-        </div> */}
+        </div>
 
         <button className='btn rounded-full bg-purple-700 mt-5'>
           {loading && <span className='loading loading-spinner'></span>}

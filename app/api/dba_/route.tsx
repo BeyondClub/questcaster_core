@@ -16,14 +16,15 @@ export async function POST(request: Request) {
     collectibleSymbol,
     totalAmount,
     maxMint,
+    contract_address
   } = await request.json();
 
-  const contract_address = await createQuest({
-    questName: collectibleName,
-    symbol: collectibleSymbol,
-    maxSupply: totalAmount,
-    mintLimit: maxMint,
-  });
+  // const contract_address = await createQuest({
+  //   questName: collectibleName,
+  //   symbol: collectibleSymbol,
+  //   maxSupply: totalAmount,
+  //   mintLimit: maxMint,
+  // });
 
   try {
     await prisma.questcaster_quests.create({

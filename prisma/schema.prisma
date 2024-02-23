@@ -9,8 +9,8 @@ datasource db {
 
 model questcaster_allowlist {
   allowlist_id String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email        String?
-  created_at   DateTime? @default(now()) @db.Timestamp(6)
+  email        String?   @db.VarChar
+  created_at   DateTime? @default(now()) @db.Timestamptz(6)
 }
 
 model questcaster_quests {
@@ -23,4 +23,471 @@ model questcaster_quests {
   verify_tokens    Boolean?
   contract_address String?  @db.VarChar(255)
   token_name       String?  @db.VarChar(255)
+}
+
+model active_memberships {
+  active_membership_id String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  contract_address     String
+  token_id             String
+  points               Decimal           @db.Decimal
+  since                DateTime          @db.Date
+  membership_tier_id   String?           @db.Uuid
+  extra_metafields     Json?
+  owner_address        String?
+  membership_tiers     membership_tiers? @relation(fields: [membership_tier_id], references: [membership_tier_id], onDelete: Cascade)
+}
+
+model active_stores {
+  shop     String   @id @db.VarChar(255)
+  isActive Boolean? @default(false)
+}
+
+model allowlist {
+  allowlist_id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  public_address String @unique
+}
+
+model allowlist_form {
+  allowlist_id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  campaign       String
+  email          String
+  public_address String
+}
+
+model apps {
+  app_id     String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  app_name   String
+  brand_id   String  @db.Uuid
+  api_key    String?
+  api_secret String?
+  app_config Json?
+}
+
+model brand_account {
+  brand_id                  String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                      String
+  username                  String        @unique
+  profile_image             String
+  cover_image               String
+  button_color              String?
+  owner_address             String
+  page_background           String?       @default("#000")
+  page_text_color           String?       @default("#fff")
+  card_background           String?
+  card_text_color           String?
+  button_text_color         String?
+  api_key                   String?
+  email                     String?
+  default_campaign          String?       @db.Uuid
+  support_email             String?
+  country_jurisdiction      String?
+  grievance_officer         String?
+  grievance_officer_contact String?
+  plan                      String?       @default("pro")
+  website                   String?
+  logo                      String?
+  memberships               memberships[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model campaigns {
+  campaign_id                String                       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  cover_image                String
+  start_date                 DateTime?                    @db.Timestamptz(6)
+  end_date                   DateTime?                    @db.Timestamptz(6)
+  collectible_image          String
+  collectible_symbol         String?
+  network                    String
+  secondary_royalty          Decimal?                     @db.Decimal
+  contract_address           String?
+  is_published               Boolean?                     @default(false)
+  brand_id                   String                       @db.Uuid
+  campaign_name              String
+  campaign_description       String?
+  reward_type                String?
+  reward_config              Json?
+  total_owners               Decimal?                     @default(0) @db.Decimal
+  amount_of_collectibles     Decimal?                     @db.Decimal
+  mint_limit_per_address     Decimal?                     @db.Decimal
+  total_mints                Decimal?                     @default(0) @db.Decimal
+  created_at                 DateTime                     @default(now()) @db.Timestamptz(6)
+  updated_at                 DateTime?                    @default(now()) @db.Timestamptz(6)
+  collectible_image_ipfs     String?
+  is_hidden                  Boolean?                     @default(false)
+  mint_method                String?                      @default("unlock")
+  poap_properties            Json?
+  contract_password          String?
+  paper_contract_id          String?
+  hide_mint                  Boolean?                     @default(false)
+  is_sbt                     Boolean?                     @default(false)
+  slug                       String?
+  campaigns_actions          campaigns_actions[]
+  campaigns_collectibles     campaigns_collectibles[]
+  campaigns_rewards          campaigns_rewards[]
+  campaigns_wallet_whitelist campaigns_wallet_whitelist[]
+}
+
+model campaigns_actions {
+  campaigns_action_id String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  campaign_id         String    @db.Uuid
+  platform            String
+  task                String?
+  platform_data       String
+  advanced_config     Json      @db.Json
+  order               Decimal?  @db.Decimal
+  optional            Boolean?  @default(false)
+  campaigns           campaigns @relation(fields: [campaign_id], references: [campaign_id], onDelete: Cascade)
+}
+
+model campaigns_collectibles {
+  campaigns_collectible_id String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  campaign_id              String    @db.Uuid
+  collectible_image        String?
+  collectible_ipfs_image   String?
+  collectible_name         String
+  collectible_symbol       String
+  secondary_royalty        Decimal?  @db.Decimal
+  contract_address         String?
+  chance                   Decimal?  @db.Decimal
+  set                      String?
+  update_contract          Boolean?  @default(false)
+  amount_of_collectibles   Decimal?  @db.Decimal
+  campaigns                campaigns @relation(fields: [campaign_id], references: [campaign_id], onDelete: Cascade)
+}
+
+model campaigns_rewards {
+  campaign_rewards_id String    @id(map: "campaign_rewards_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  campaign_id         String    @db.Uuid
+  reward_type         String
+  reward_config       Json?
+  secret              Boolean   @default(false)
+  order               Decimal?  @db.Decimal
+  campaigns           campaigns @relation(fields: [campaign_id], references: [campaign_id], onDelete: Cascade, map: "campaign_rewards_campaign_id_fkey")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model campaigns_wallet_whitelist {
+  campaigns_whitelist_id String    @id(map: "campaigns_whitelist_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  wallet_address         Json
+  campaign_id            String    @db.Uuid
+  address_type           Int?      @default(1)
+  campaigns              campaigns @relation(fields: [campaign_id], references: [campaign_id], onDelete: Cascade)
+}
+
+model customer_action_completed {
+  customer_action_completed_id String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id                  String    @db.Uuid
+  campaign_id                  String    @db.Uuid
+  campaign_action_id           String    @db.Uuid
+  values                       Json?
+  customers                    customers @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+}
+
+model customers {
+  customer_id                 String                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  public_address              String?                       @unique
+  email                       String?
+  twitter_username            String?
+  twitter_id_str              String?
+  twitter_email               String?
+  twitch_username             String?
+  twitch_id_str               String?
+  discord_username            String?
+  discord_id_str              String?
+  provider                    String?
+  youtube_username            String?
+  line_username               String?
+  device_id                   String?
+  customer_action_completed   customer_action_completed[]
+  membership_action_completed membership_action_completed[]
+  mint_history                mint_history[]
+  quest_history               quest_history[]
+  reward_history              reward_history[]
+
+  @@index([email], map: "customers_email_key")
+}
+
+model email_drop {
+  drop_id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  contract_address String
+  public_address   String
+  token_id         String
+  transfer_token   String?
+  transfer_address String?
+  email            String
+}
+
+model email_otp {
+  email_otp_id       String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email_id           String
+  otp                String
+  campaign_action_id String    @db.Uuid
+  created_at         DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model event_access {
+  event_access_id String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  campaign_id     String   @db.Uuid
+  public_address  String
+  token_id        String
+  created_at      DateTime @default(now()) @db.Timestamp(6)
+  additional_data Json?
+}
+
+model file_downloads_history {
+  download_id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  token_id           Decimal  @db.Decimal
+  contract_address   String
+  created_at         DateTime @default(now()) @db.Timestamptz(6)
+  campaign_action_id String   @db.Uuid
+}
+
+model membership_action_completed {
+  membership_action_completed_id String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id                    String                    @db.Uuid
+  quest_id                       String                    @db.Uuid
+  quest_action_id                String                    @db.Uuid
+  values                         Json?
+  processed                      Boolean?
+  customers                      customers                 @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+  membership_quests_actions      membership_quests_actions @relation(fields: [quest_action_id], references: [quest_action_id], onDelete: Cascade)
+  membership_quests              membership_quests         @relation(fields: [quest_id], references: [quest_id], onDelete: Cascade)
+}
+
+model membership_quests {
+  quest_id                    String                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  membership_id               String                        @db.Uuid
+  quest_name                  String
+  quest_image                 String?
+  quest_description           String
+  points                      Decimal                       @db.Decimal
+  start_date                  DateTime?                     @db.Timestamptz(6)
+  end_date                    DateTime?                     @db.Timestamptz(6)
+  symbol                      String?
+  secondary_royalty           Decimal?                      @db.Decimal
+  is_published                Boolean                       @default(true)
+  contract_address            String?
+  contract_password           String?
+  paper_contract_id           String?
+  total_mints                 Decimal?                      @default(0) @db.Decimal
+  network                     String?
+  mint_limit_per_address      Decimal?                      @default(1) @db.Decimal
+  amount_of_collectibles      Decimal?                      @db.Decimal
+  is_sbt                      Boolean?                      @default(false)
+  collectible_image_ipfs      String?
+  is_hidden                   Boolean?                      @default(false)
+  slug                        String?
+  membership_action_completed membership_action_completed[]
+  memberships                 memberships                   @relation(fields: [membership_id], references: [membership_id], onDelete: Cascade)
+  membership_quests_actions   membership_quests_actions[]
+  quest_history               quest_history[]
+  quests_wallet_whitelist     quests_wallet_whitelist[]
+}
+
+model membership_quests_actions {
+  quest_action_id             String                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  quest_id                    String                        @db.Uuid
+  platform                    String
+  task                        String?
+  platform_data               String
+  advanced_config             Json                          @db.Json
+  order                       Decimal?                      @db.Decimal
+  membership_action_completed membership_action_completed[]
+  membership_quests           membership_quests             @relation(fields: [quest_id], references: [quest_id], onDelete: Cascade)
+}
+
+model membership_rewards {
+  membership_reward_id     String                     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reward_name              String
+  reward_image             String
+  reward_description       String?
+  consume_points           Decimal                    @default(0) @db.Decimal
+  start_date               DateTime?                  @db.Timestamptz(6)
+  end_date                 DateTime?                  @db.Timestamptz(6)
+  reward_type              String
+  reward_config            Json?
+  secret                   Boolean                    @default(false)
+  order                    Decimal?                   @db.Decimal
+  membership_id            String                     @db.Uuid
+  is_published             Boolean                    @default(true)
+  claimed                  Decimal?                   @default(0) @db.Decimal
+  limit                    Decimal?                   @db.Decimal
+  memberships              memberships                @relation(fields: [membership_id], references: [membership_id], onDelete: Cascade)
+  membership_rewards_tiers membership_rewards_tiers[]
+  reward_history           reward_history[]
+}
+
+model membership_rewards_tiers {
+  membership_rewards_tier_id String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  membership_reward_id       String             @db.Uuid
+  membership_tier_id         String             @db.Uuid
+  membership_rewards         membership_rewards @relation(fields: [membership_reward_id], references: [membership_reward_id], onDelete: Cascade)
+  membership_tiers           membership_tiers   @relation(fields: [membership_tier_id], references: [membership_tier_id], onDelete: Cascade)
+}
+
+model membership_tiers {
+  membership_tier_id       String                     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  membership_id            String                     @db.Uuid
+  tier_name                String
+  tier_image               String
+  entry_points             Decimal?                   @db.Decimal
+  price                    Decimal?                   @db.Decimal
+  currency                 String?
+  is_published             Boolean                    @default(true)
+  contract_address         String?
+  validity                 Decimal?                   @db.Decimal
+  symbol                   String?
+  extra_points             Decimal?                   @default(0) @db.Decimal
+  collectible_image_ipfs   String?
+  active_memberships       active_memberships[]
+  membership_rewards_tiers membership_rewards_tiers[]
+  memberships              memberships                @relation(fields: [membership_id], references: [membership_id], onDelete: Cascade)
+}
+
+model memberships {
+  membership_id          String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  brand_id               String               @db.Uuid
+  name                   String
+  image                  String?
+  description            String?
+  created_at             DateTime             @default(now()) @db.Timestamptz(6)
+  is_published           Boolean              @default(true)
+  contract_address       String?
+  symbol                 String               @default("MEM")
+  network                String?
+  extra_metafields       Json?
+  contract_password      String?
+  is_sbt                 Boolean?             @default(false)
+  collectible_image_ipfs String?
+  membership_quests      membership_quests[]
+  membership_rewards     membership_rewards[]
+  membership_tiers       membership_tiers[]
+  brand_account          brand_account        @relation(fields: [brand_id], references: [brand_id], onDelete: Cascade)
+}
+
+model mint_history {
+  minted_id    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id  String    @db.Uuid
+  campaign_id  String    @db.Uuid
+  mint_count   Decimal   @default(1) @db.Decimal
+  tx_hash      String
+  is_confirmed Boolean   @default(false)
+  amount       Decimal?  @db.Decimal
+  currency     String?
+  value_in_usd Decimal?  @db.Decimal
+  created_at   DateTime? @default(now()) @db.Timestamptz(6)
+  token_id     String?
+  paper_tx_id  String?
+  customers    customers @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+}
+
+model mint_summary {
+  mint_summary_id String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  campaign_id     String   @db.Uuid
+  mint_date       DateTime @db.Date
+  mint_count      Decimal  @default(0) @db.Decimal
+  token_id        String?
+}
+
+model oauth_tokens {
+  oauth_id      String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  token         String?
+  refresh_token String?
+  expire        Decimal? @db.Decimal
+  provider      String
+  customer_id   String   @db.Uuid
+  id_token      String?
+  brand_id      String?  @db.Uuid
+}
+
+model payment_history {
+  payment_id String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  amount     Decimal  @db.Decimal
+  created_at DateTime @default(now()) @db.Date
+  status     Int      @default(0) @db.SmallInt
+  brand_id   String   @db.Uuid
+}
+
+model payment_history_summary {
+  payment_history_summary_id String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  brand_id                   String   @db.Uuid
+  payment_date               DateTime @db.Date
+  amount                     Decimal  @db.Decimal
+}
+
+model quest_history {
+  minted_id         String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id       String             @db.Uuid
+  campaign_id       String?            @db.Uuid
+  mint_count        Decimal            @default(1) @db.Decimal
+  tx_hash           String?
+  is_confirmed      Boolean            @default(false)
+  amount            Decimal?           @db.Decimal
+  currency          String?
+  value_in_usd      Decimal?           @db.Decimal
+  token_id          String?
+  paper_tx_id       String?
+  point_credited    Decimal            @default(0) @db.Decimal
+  created_at        DateTime           @default(now()) @db.Timestamptz(6)
+  note              String?
+  brand_id          String?            @db.Uuid
+  membership_quests membership_quests? @relation(fields: [campaign_id], references: [quest_id], onDelete: Cascade)
+  customers         customers          @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+}
+
+model quest_summary {
+  mint_summary_id String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  campaign_id     String   @db.Uuid
+  mint_date       DateTime @db.Date
+  mint_count      Decimal  @default(0) @db.Decimal
+  token_id        String?
+}
+
+model quests_wallet_whitelist {
+  campaigns_whitelist_id String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  wallet_address         Json
+  campaign_id            String            @db.Uuid
+  address_type           Int?              @default(1)
+  membership_quests      membership_quests @relation(fields: [campaign_id], references: [quest_id], onDelete: Cascade)
+}
+
+model queue_airdrop {
+  queue_airdrop_id String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  wallet_address   String
+  contract_address String
+  nft_count        Decimal   @default(1) @db.Decimal
+  retry            Decimal   @default(0) @db.Decimal
+  created_at       DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model reward_history {
+  reward_history_id  String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id        String             @db.Uuid
+  reward_id          String             @db.Uuid
+  points             Decimal?           @db.Decimal
+  created_at         DateTime           @default(now()) @db.Timestamptz(6)
+  customers          customers          @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+  membership_rewards membership_rewards @relation(fields: [reward_id], references: [membership_reward_id], onDelete: Cascade)
+}
+
+model session {
+  id      String  @id @db.VarChar(255)
+  content String?
+  shop    String? @db.VarChar(255)
+}
+
+model shopify_nft_products {
+  product_nft_id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shop             String
+  product_id       String
+  contract_address String
+}
+
+model trip_history {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  trip_date   DateTime @db.Date
+  customer_id String   @db.Uuid
+  points      Decimal  @db.Decimal
+  tx_hash     String
 }
