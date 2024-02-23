@@ -1,4 +1,3 @@
-import { createQuest } from "@/app/lib/contract";
 import { prisma } from "@/app/lib/db";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -14,20 +13,9 @@ export default async function Handler(
     verify_follow,
     verify_recast,
     verify_tokens,
-    collectibleName,
-    collectibleSymbol,
-    totalAmount,
-    maxMint,
     token_name,
-    contract_address
+    contract_address,
   } = request.body;
-
-  // const contract_address = await createQuest({
-  //   questName: collectibleName,
-  //   symbol: collectibleSymbol,
-  //   maxSupply: totalAmount,
-  //   mintLimit: maxMint,
-  // });
 
   try {
     await prisma.questcaster_quests.create({
