@@ -1,7 +1,7 @@
 export const DOMAIN =
   process.env.NODE_ENV === "production"
     ? "https://www.questcaster.xyz"
-    : "http://localhost:3000";
+    : "https://edb3-2401-4900-1c23-68a2-188d-fb4a-728a-ce41.ngrok-free.app";
 
 export const chainConfig = {
   8453: {

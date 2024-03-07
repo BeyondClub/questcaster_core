@@ -1,6 +1,6 @@
 // currently only on Base 
 
-export const questFactoryAddress = "0x363049d1aDBbE891e63eCd21834647F6FaE870e0"
+export const questFactoryAddress = "0xDB114bd978877461C985D4786965198219919B03"
 
 export const questFactoryABI = [
 	{

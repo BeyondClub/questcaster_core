@@ -1,10 +1,10 @@
 // @ts-nocheck
 "use client";
-import {
-  ConnectButton,
-  useChainModal,
-  useConnectModal,
-} from "@rainbow-me/rainbowkit";
+// import {
+//   ConnectButton,
+//   useChainModal,
+//   useConnectModal,
+// } from "@rainbow-me/rainbowkit";
 import { ethers } from "ethers";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -17,7 +17,8 @@ import SectionHeading from "./SectionHeading";
 require("dotenv").config();
 
 const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
-  const { openConnectModal } = useConnectModal();
+  // const { openConnectModal } = useConnectModal();
+  const [address, setAddress] = useState("");
   const [username, setUsername] = useState("");
   const [tokenName, setTokenName] = useState("");
   const [tokenAddress, setTokenAddress] = useState("");
@@ -30,10 +31,10 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
   const [recast, setRecast] = useState(false);
   const [token, setToken] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { openChainModal } = useChainModal();
+  // const { openChainModal } = useChainModal();
 
-  const { address } = useAccount();
-  const chainId = useChainId();
+  // const { address } = useAccount();
+  // const chainId = useChainId();
 
   async function addDataToVercelDB(e: { preventDefault: () => void }) {
     e.preventDefault();
@@ -48,18 +49,22 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
 
     try {
       const provider = new ethers.providers.Web3Provider(
-        (window as any).ethereum
+        (window as any).ethereum, 5101
       );
-
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      setAddress(accounts[0]);
       const network = await provider.getNetwork();
       const connectedChainId = network.chainId;
+      console.log(connectedChainId)
 
-      if (connectedChainId !== 8453) {
-        openChainModal?.();
-        return;
-      }
+      // if (connectedChainId !== 8453) {
+      //   openChainModal?.();
+      //   return;
+      // }
 
-      const signer = await provider.getSigner();
+      const signer = provider.getSigner();
       const factoryContract = new ethers.Contract(
         questFactoryAddress,
         questFactoryABI,
@@ -78,7 +83,7 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
         totalAmount,
         maxMint,
         // process.env.SYNDICATE_API_WALLET
-        "0xbdde681915a99318d822b1f5d29226b9c0073774"
+        "0x98d03c4038c1bdf609920f4c938c72ce58b398f5"
       );
 
       const receipt = await newQuest.wait();
@@ -492,29 +497,11 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
           </label> */}
         </div>
 
-        {address ? (
-          <>
-            {chainId === 8453 ? (
               <button className="btn rounded-full bg-purple-700 mt-5">
                 {loading && <span className="loading loading-spinner"></span>}
                 {!loading && "Generate Link"}
               </button>
-            ) : (
-              <>
-                <button
-                  onClick={openChainModal}
-                  className="btn rounded-full bg-purple-700 mt-5"
-                >
-                  Switch Chain
-                </button>
-              </>
-            )}
-          </>
-        ) : (
-          <div className="mt-5">
-            <ConnectButton />
-          </div>
-        )}
+        
 
         {address ? (
           <div className="flex items-center space-x-5 my-2">
@@ -522,13 +509,6 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
               Connected account:{" "}
               {address ? <>{shortenAddress(address)}</> : null}
             </p>
-
-            <a
-              className="cursor-pointer text-gray-400 hover:text-gray-100"
-              onClick={openChainModal}
-            >
-              Disconnect
-            </a>
           </div>
         ) : null}
       </form>
