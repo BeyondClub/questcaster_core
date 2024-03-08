@@ -1,10 +1,10 @@
 // @ts-nocheck
 "use client";
-// import {
-//   ConnectButton,
-//   useChainModal,
-//   useConnectModal,
-// } from "@rainbow-me/rainbowkit";
+import {
+  ConnectButton,
+  useChainModal,
+  useConnectModal,
+} from "@rainbow-me/rainbowkit";
 import { ethers } from "ethers";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -17,8 +17,7 @@ import SectionHeading from "./SectionHeading";
 require("dotenv").config();
 
 const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
-  // const { openConnectModal } = useConnectModal();
-  const [address, setAddress] = useState("");
+  const { openConnectModal } = useConnectModal();
   const [username, setUsername] = useState("");
   const [tokenName, setTokenName] = useState("");
   const [tokenAddress, setTokenAddress] = useState("");
@@ -31,10 +30,10 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
   const [recast, setRecast] = useState(false);
   const [token, setToken] = useState(false);
   const [loading, setLoading] = useState(false);
-  // const { openChainModal } = useChainModal();
+  const { openChainModal } = useChainModal();
 
-  // const { address } = useAccount();
-  // const chainId = useChainId();
+  const { address } = useAccount();
+  const chainId = useChainId();
 
   async function addDataToVercelDB(e: { preventDefault: () => void }) {
     e.preventDefault();
@@ -49,7 +48,8 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
 
     try {
       const provider = new ethers.providers.Web3Provider(
-        (window as any).ethereum, 5101
+        (window as any).ethereum,
+        5101
       );
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
@@ -57,12 +57,12 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
       setAddress(accounts[0]);
       const network = await provider.getNetwork();
       const connectedChainId = network.chainId;
-      console.log(connectedChainId)
+      console.log(connectedChainId);
 
-      // if (connectedChainId !== 8453) {
-      //   openChainModal?.();
-      //   return;
-      // }
+      if (connectedChainId !== 5101) {
+        openChainModal?.();
+        return;
+      }
 
       const signer = provider.getSigner();
       const factoryContract = new ethers.Contract(
@@ -468,40 +468,30 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
               onChange={(e: any) => setMaxMint(Number(e.target.value))}
             />
           </label>
-          {/* <label className="form-control w-full  mt-3">
-            <div className="label">
-              <span className="label-text text-white">Network</span>
-            </div>
-            <div className="dropdown dropdown-bottom">
-              <div tabIndex={0} role="button" className="btn m-1">
-                Base
-              </div>
-              <ul
-                tabIndex={0}
-                className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
-              >
-                <li>
-                  <a>Base</a>
-                </li>
-                <li>
-                  <a>Ethereum</a>
-                </li>
-                <li>
-                  <a>Polygon Mumbai</a>
-                </li>
-                <li>
-                  <a>Polygon</a>
-                </li>
-              </ul>
-            </div>
-          </label> */}
         </div>
-
+        {address ? (
+          <>
+            {chainId === 5101 ? (
               <button className="btn rounded-full bg-purple-700 mt-5">
                 {loading && <span className="loading loading-spinner"></span>}
                 {!loading && "Generate Link"}
               </button>
-        
+            ) : (
+              <>
+                <button
+                  onClick={openChainModal}
+                  className="btn rounded-full bg-purple-700 mt-5"
+                >
+                  Switch Chain
+                </button>
+              </>
+            )}
+          </>
+        ) : (
+          <div className="mt-5">
+            <ConnectButton />
+          </div>
+        )}
 
         {address ? (
           <div className="flex items-center space-x-5 my-2">
@@ -509,6 +499,12 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
               Connected account:{" "}
               {address ? <>{shortenAddress(address)}</> : null}
             </p>
+            <a
+              className="cursor-pointer text-gray-400 hover:text-gray-100"
+              onClick={openChainModal}
+            >
+              Disconnect
+            </a>
           </div>
         ) : null}
       </form>
