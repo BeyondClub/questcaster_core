@@ -194,6 +194,15 @@ export async function POST(req: NextRequest): Promise<Response> {
     }
   }
 
+  if (quest.completed) {
+    return new NextResponse(`<!DOCTYPE html><html><head>
+    <meta property="fc:frame" content="vNext" />
+    <meta property="fc:frame:image" content=${`${DOMAIN}/api/images/start?id=${id}`} />
+    <meta property="fc:frame:button:1" content='Sold Out' />
+    <meta property="fc:frame:post_url" content=${`${DOMAIN}/api/verify?id=${id}`} />
+  </head></html>`);
+  }
+
   try {
     // @dev mint part here
 

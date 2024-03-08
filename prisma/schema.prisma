@@ -23,6 +23,7 @@ model questcaster_quests {
   verify_tokens    Boolean?
   contract_address String?  @db.VarChar(255)
   token_name       String?  @db.VarChar(255)
+  completed        Boolean?
 }
 
 model active_memberships {
