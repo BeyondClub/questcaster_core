@@ -7,6 +7,7 @@ import {
 } from "@rainbow-me/rainbowkit";
 import { ethers } from "ethers";
 import { useState } from "react";
+import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { useAccount, useChainId } from "wagmi";
 import { DOMAIN } from "../config";
@@ -25,7 +26,7 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
   const [collectibleSymbol, setCollectibleSymbol] = useState("");
   const [maxMint, setMaxMint] = useState(1);
   const [totalAmount, setTotalAmount] = useState(100);
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<any>(null);
   const [follow, setFollow] = useState(false);
   const [recast, setRecast] = useState(false);
   const [token, setToken] = useState(false);
@@ -54,7 +55,7 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
-      setAddress(accounts[0]);
+
       const network = await provider.getNetwork();
       const connectedChainId = network.chainId;
       console.log(connectedChainId);
@@ -126,7 +127,7 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
     }
   }
 
-  const fileUpload = async (file) => {
+  const fileUpload = async (file: any) => {
     if (file) {
       try {
         const fileType = file.type.split("/")[1];
