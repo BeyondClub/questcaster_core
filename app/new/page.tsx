@@ -15,7 +15,7 @@ const page = () => {
 
   return (
     <WalletProvider>
-      <main className="min-h-screen bg-black  px-32 py-10">
+      <main className="min-h-screen bg-black px-2  md:px-32 py-10">
         <div className="fixed inset-0 overflow-hidden -z-0">
           <div className="absolute -translate-x-1/2 -translate-y-1/2 top-[10%] left-[90%]">
             <motion.div
