@@ -103,7 +103,7 @@ export default function LandingPage() {
           <a
             href="/new"
             type="submit"
-            className="bg-black text-2xl text-white shadow-[0_0_6px_0_#ffffff50] rounded-full px-5 py-2 disabled:opacity-50 disabled:cursor-not-allowed w-full md:w-auto"
+            className="bg-black text-center text-2xl text-white shadow-[0_0_6px_0_#ffffff50] rounded-full px-5 py-2 disabled:opacity-50 disabled:cursor-not-allowed w-full md:w-auto"
           >
             Launch App
           </a>

@@ -11,6 +11,11 @@ export const metadata: Metadata = {
     description: "The Easiest way to boost Community Engagement with Frames",
     images: [`${DOMAIN}/images/og_image.png`],
   },
+  twitter: {
+    title: "Questcaster",
+    description: "The Easiest way to boost Community Engagement with Frames",
+    images: [`${DOMAIN}/images/og_image.png`],
+  },
 };
 
 const page = () => {
