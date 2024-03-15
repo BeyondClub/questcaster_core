@@ -477,6 +477,8 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
             <a
               className="underline text-blue-100 hover:text-blue-300"
               href="https://frame.syndicate.io/"
+              target="_blank"
+              rel="noreferrer noopener"
             >
               Syndicate Frame Chain
             </a>
@@ -487,6 +489,8 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
             <a
               className="underline text-blue-100 hover:text-blue-300"
               href="https://bridge-frame.syndicate.io/"
+              target="_blank"
+              rel="noreferrer noopener"
             >
               here
             </a>
