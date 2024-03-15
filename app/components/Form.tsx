@@ -359,7 +359,7 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
             </>
           )}
         </div>
-        <div className="grid grid-rows-2 grid-cols-3 mt-5">
+        <div className="grid grid-rows-2 md:grid-cols-3 mt-5">
           <div
             className="rounded-xl cursor-pointer m-1 p-4 px-5 bg-purple-100 text-black font-bold text-sm flex items-center"
             onClick={() =>
