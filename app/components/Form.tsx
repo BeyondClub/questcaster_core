@@ -470,6 +470,30 @@ const Form = ({ setSuccess, setLink }: { setSuccess: any; setLink: any }) => {
             />
           </label>
         </div>
+
+        <div className="mt-5">
+          <p>
+            This NFT will be minted on{" "}
+            <a
+              className="underline text-blue-100"
+              href="https://frame.syndicate.io/"
+            >
+              Syndicate Frame Chain
+            </a>
+            , L3 on Base 🔵
+          </p>
+          <p>
+            You can bridge ETH{" "}
+            <a
+              className="underline text-blue-100"
+              href="https://bridge-frame.syndicate.io/"
+            >
+              here
+            </a>
+            !
+          </p>
+        </div>
+
         {address ? (
           <>
             {chainId === 5101 ? (
