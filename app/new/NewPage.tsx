@@ -33,7 +33,7 @@ const NewPage = () => {
 
         <header className="grid place-items-center mb-10">
           <img
-            src="/images/logo.svg"
+            src="/images/questcaster_alpha.svg"
             alt="questcater"
             className="z-20 w-72"
             style={{ zIndex: "999" }}

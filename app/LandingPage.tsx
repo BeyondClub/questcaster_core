@@ -49,7 +49,7 @@ export default function LandingPage() {
   };
 
   return (
-    <main className="grid place-content-center space-y-10 place-items-center text-gray-100 min-h-screen p-5">
+    <main className="grid place-content-center space-y-10 place-items-center text-gray-100 min-h-screen p-5 relative">
       <div className="fixed inset-0 overflow-hidden -z-0">
         <div className="absolute -translate-x-1/2 -translate-y-1/2 top-[10%] left-[90%]">
           <motion.div
@@ -66,13 +66,16 @@ export default function LandingPage() {
 
       <Toaster position="bottom-center" />
 
-      <div className="space-y-10 drop-shadow-2xl home">
-        <motion.img
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0, transition: { stiffness: 100 } }}
-          src="/images/logo.svg"
-          alt="questcater"
-        />
+      <div className="space-y-10 drop-shadow-2xl home ">
+        <div className="grid place-items-center">
+          <motion.img
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0, transition: { stiffness: 100 } }}
+            src="/images/questcaster_alpha.svg"
+            alt="questcater"
+            width={800}
+          />
+        </div>
 
         <motion.p
           initial={{ opacity: 0, y: 50 }}
@@ -95,36 +98,28 @@ export default function LandingPage() {
             gap: "1.5rem",
             transition: { delay: 0.4, stiffness: 100 },
           }}
-          className="flex-col md:flex-row flex w-full"
+          className="flex-col md:flex-row  w-full grid place-items-center"
         >
-          <input
-            type="text"
-            required
-            className="p-3 rounded-md md:w-3/4 bg-white text-gray-900"
-            placeholder="Email address"
-            disabled={completed}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <button
-            disabled={completed || loading}
+          <a
+            href="/new"
             type="submit"
-            className="bg-black text-white shadow-[0_0_6px_0_#ffffff50] rounded-full px-5 py-2 disabled:opacity-50 disabled:cursor-not-allowed w-full md:w-auto"
+            className="bg-black text-2xl text-white shadow-[0_0_6px_0_#ffffff50] rounded-full px-5 py-2 disabled:opacity-50 disabled:cursor-not-allowed w-full md:w-auto"
           >
-            Join Waitlist
-          </button>
+            Launch App
+          </a>
         </motion.form>
       </div>
 
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: { delay: 0.75 } }}
-        className="flex items-center z-20"
-      >
-        Built on
-        <img src="images/farcaster.svg" alt="farcaster" className="ml-2" />
-      </motion.p>
+      <div className="fixed bottom-10">
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { delay: 0.75 } }}
+          className="flex items-center z-20"
+        >
+          Built on
+          <img src="images/farcaster.svg" alt="farcaster" className="ml-2" />
+        </motion.p>
+      </div>
     </main>
   );
 }
